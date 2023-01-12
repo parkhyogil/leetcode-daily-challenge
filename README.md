@@ -1,0 +1,2 @@
+# leetcode
+solve Leetcode problems.
