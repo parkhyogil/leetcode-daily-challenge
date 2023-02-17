@@ -26,18 +26,18 @@ class Solution {
         int[] left = recur(root.left);
         int[] right = recur(root.right);
 
-        int res = Integer.MAX_VALUE;
+        int minDiff = Integer.MAX_VALUE;
         int min = root.val;
         int max = root.val;
 
         if (left != null) {
-            res = Math.min(res, Math.min(left[0], root.val - left[2]));
+            minDiff = Math.min(minDiff, Math.min(left[0], root.val - left[2]));
             min = Math.min(min, left[1]);
         }
         if (right != null) {
-            res = Math.min(res, Math.min(right[0], right[1] - root.val));
+            minDiff = Math.min(minDiff, Math.min(right[0], right[1] - root.val));
             max = Math.max(max, right[2]);
         }
-        return new int[] {res, min, max};
+        return new int[] {minDiff, min, max};
     }
 }
