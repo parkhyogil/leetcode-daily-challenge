@@ -4,22 +4,29 @@ class Solution {
     }
 
     private Node build(int[][] grid, int r1, int r2, int c1, int c2) {
+        if (isSame(grid, r1, r2, c1, c2)) {
+            return new Node(grid[r1][c1] == 1, true);
+        }
+        int rm = (r1 + r2) / 2;
+        int cm = (c1 + c2) / 2;
+        return new Node(false, false, 
+            build(grid, r1, rm, c1, cm),
+            build(grid, r1, rm, cm, c2),
+            build(grid, rm, r2, c1, cm),
+            build(grid, rm, r2, cm, c2)
+        );
+    }
+
+    private boolean isSame(int[][] grid, int r1, int r2, int c1, int c2) {
         int val = grid[r1][c1];
         for (int i = r1; i < r2; i++) {
             for (int j = c1; j < c2; j++) {
                 if (val != grid[i][j]) {
-                    int rm = (r1 + r2) / 2;
-                    int cm = (c1 + c2) / 2;
-                    return new Node(false, false, 
-                        build(grid, r1, rm, c1, cm),
-                        build(grid, r1, rm, cm, c2),
-                        build(grid, rm, r2, c1, cm),
-                        build(grid, rm, r2, cm, c2)
-                    );
+                    return false;
                 }
             }
         }
-        return new Node(val == 1, true);
+        return true;
     }
 }
 
