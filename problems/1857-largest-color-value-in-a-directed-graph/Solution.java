@@ -13,21 +13,22 @@ class Solution {
             indegree[e[1]]++;
         }
 
-        int[][] count = new int[n][26];
-        boolean[] visit = new boolean[n];
-
         Queue<Integer> q = new LinkedList<>();
         for (int i = 0; i < n; i++) {
             if (indegree[i] == 0) {
                 q.offer(i);
-                visit[i] = true;
             }
         }
+
+        int res = 0;
+        int passedNode = 0;
+        int[][] count = new int[n][26];
 
         while (!q.isEmpty()) {
             int node = q.poll();
             int color = colors.charAt(node) - 'a';
-            count[node][color]++;
+            res = Math.max(res, ++count[node][color]);
+            passedNode++;
 
             for (int next : graph.get(node)) {
                 indegree[next]--;
@@ -36,20 +37,10 @@ class Solution {
                 }
                 if (indegree[next] == 0) {
                     q.offer(next);
-                    visit[next] = true;
                 }
             }
         }
 
-        int res = 0;
-        for (int i = 0; i < n; i++) {
-            if (!visit[i]) {
-                return -1;
-            }
-            for (int j = 0; j < 26; j++) {
-                res = Math.max(res, count[i][j]);
-            }
-        }
-        return res;
+        return passedNode == n ? res : -1;
     }
 }
