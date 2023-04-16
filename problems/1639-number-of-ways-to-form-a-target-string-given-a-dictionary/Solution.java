@@ -11,31 +11,30 @@ class Solution {
                 charCount[i][word.charAt(i) - 'a']++;
             }
         }
+
         int[][] memo = new int[n][m];
         for (int[] arr : memo) {
             Arrays.fill(arr, -1);
         }
-        return recur(0, 0, charCount, target, memo);
+        return recur(n - 1, m - 1, charCount, target, memo);
     }
 
     private int recur(int targetIdx, int wordIdx, int[][] charCount, String target, int[][] memo) {
-        if (targetIdx == target.length()) {
+        if (targetIdx < 0) {
             return 1;
         }
-        if (target.length() - targetIdx > charCount.length - wordIdx) {
+        if (targetIdx > wordIdx) {
             return 0;
         }
         if (memo[targetIdx][wordIdx] != -1) {
             return memo[targetIdx][wordIdx];
         }
-        long res = 0;
-        for (int i = wordIdx; i < charCount.length; i++) {
-            long count = charCount[i][target.charAt(targetIdx) - 'a'];
-            if (count > 0) {
-                res += count * recur(targetIdx + 1, i + 1, charCount, target, memo);
-                res %= MOD;
-            }            
-        }
+        long res = recur(targetIdx, wordIdx - 1, charCount, target, memo);
+        long count = charCount[wordIdx][target.charAt(targetIdx) - 'a'];
+        if (count > 0) {
+            res += count * recur(targetIdx - 1, wordIdx - 1, charCount, target, memo);
+            res %= MOD;
+        }            
         return memo[targetIdx][wordIdx] = (int) res;
     }
 }
