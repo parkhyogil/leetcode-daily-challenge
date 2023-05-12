@@ -6,8 +6,8 @@ class Solution {
 
         for (int i = n - 1; i >= 0; i--) {
             int point = questions[i][0];
-            int brainPower = questions[i][1];
-            int next = i + brainPower + 1;
+            int brainpower = questions[i][1];
+            int next = i + brainpower + 1;
 
             dp[i] = Math.max(dp[i + 1], point + (next < n ? dp[next] : 0));
         }
