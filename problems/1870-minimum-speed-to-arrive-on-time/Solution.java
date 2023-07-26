@@ -2,7 +2,7 @@ class Solution {
     public int minSpeedOnTime(int[] dist, double hour) {
         int n = dist.length;
 
-        if ((int) hour < n - 1) {
+        if (hour <= n - 1) {
             return -1;
         }
 
