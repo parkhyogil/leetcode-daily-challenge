@@ -1,39 +1,50 @@
 class Solution {
+    private int m;
+    private int n;
+    private int[][] heights;
+
     public int minimumEffortPath(int[][] heights) {
-        int m = heights.length;
-        int n = heights[0].length;
-        int[][] dir = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        m = heights.length;
+        n = heights[0].length;
+        this.heights = heights;
 
-        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> Integer.compare(a[2], b[2]));
-        boolean[][] visit = new boolean[m][n];
+        int lo = 0;
+        int hi = (int) 1e6;
 
-        pq.offer(new int[] {0, 0, 0});
+        while (lo <= hi) {
+            int mid = (lo + hi) / 2;
 
-        int res = 0;
-        while (!pq.isEmpty()) {
-            int[] curr = pq.poll();
-            int r = curr[0];
-            int c = curr[1];
-
-            visit[r][c] = true;
-
-            res = Math.max(res, curr[2]);
-
-            if (r == m - 1 && c == n - 1) {
-                return res;
-            }
-
-            for (int[] d : dir) {
-                int nr = r + d[0];
-                int nc = c + d[1];
-
-                if (nr < 0 || nc < 0 || nr == m || nc == n || visit[nr][nc]) {
-                    continue;
-                }
-
-                pq.offer(new int[] {nr, nc, Math.abs(heights[nr][nc] - heights[r][c])});
+            if (canTravel(0, 0, mid, new boolean[m][n])) {
+                hi = mid - 1;
+            } else {
+                lo = mid + 1;
             }
         }
-        return -1;
+        return lo;
+    }
+
+    private boolean canTravel(int r, int c, int max, boolean[][] visit) {
+        if (r == m - 1 && c == n - 1) {
+            return true;
+        }
+
+        boolean res = false;
+        int h = heights[r][c];
+        visit[r][c] = true;
+
+        if (r > 0 && !visit[r - 1][c] && Math.abs(h - heights[r - 1][c]) <= max) {
+            res |= canTravel(r - 1, c, max, visit);
+        }
+        if (r < m - 1 && !visit[r + 1][c] && Math.abs(h - heights[r + 1][c]) <= max) {
+            res |= canTravel(r + 1, c, max, visit);
+        }
+        if (c > 0 && !visit[r][c - 1] && Math.abs(h - heights[r][c - 1]) <= max) {
+            res |= canTravel(r, c - 1, max, visit);
+        }
+        if (c < n - 1 && !visit[r][c + 1] && Math.abs(h - heights[r][c + 1]) <= max) {
+            res |= canTravel(r, c + 1, max, visit);
+        }
+
+        return res;
     }
 }
