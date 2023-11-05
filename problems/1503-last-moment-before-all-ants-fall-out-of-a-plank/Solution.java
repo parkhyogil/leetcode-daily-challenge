@@ -3,7 +3,7 @@ class Solution {
         int res = 0;
 
         for (int a : left) {
-            res = Math.max(res, n);
+            res = Math.max(res, a);
         }
 
         for (int a : right) {
