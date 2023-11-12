@@ -1,46 +1,77 @@
 class Solution {
     public int numBusesToDestination(int[][] routes, int source, int target) {
-        Map<Integer, List<Integer>> map = new HashMap<>();
+        if (source == target) {
+            return 0;
+        }
 
-        for (int i = 0; i < routes.length; i++) {
-            for (int busStop : routes[i]) {
-                map.computeIfAbsent(busStop, key -> new ArrayList<>()).add(i);
+        for (int[] route : routes) {
+            Arrays.sort(route);
+        }
+        
+        int n = routes.length;
+        
+        boolean[][] graph = new boolean[n][n];
+        boolean[] visit = new boolean[n];
+        Queue<Integer> queue = new LinkedList<>();
+        Set<Integer> targetRoute = new HashSet<>();
+
+        for (int i = 0; i < n; i++) {
+            for (int stop : routes[i]) {
+                if (stop == source) {
+                    queue.offer(i);
+                    visit[i] = true;
+                }
+
+                if (stop == target) {
+                    targetRoute.add(i);
+                }
+            }
+            for (int j = i + 1; j < n; j++) {
+                if (isConnected(routes[i], routes[j])) {
+                    graph[i][j] = graph[j][i] = true;
+                }
             }
         }
 
-        Queue<Integer> q = new LinkedList<>();
-        boolean[] visit = new boolean[routes.length];
-        Set<Integer> busVisit = new HashSet<>();
-
-        q.offer(source);
-        int res = 0;
-
-        while (!q.isEmpty()) {
-            int size = q.size();
+        int res = 1;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
 
             while (size-- > 0) {
-                int busStop = q.poll();
+                int route = queue.poll();
 
-                if (busStop == target) {
+                if (targetRoute.contains(route)) {
                     return res;
                 }
 
-                for (int route : map.get(busStop)) {
-                    if (visit[route]) {
-                        continue;
+                for (int next = 0; next < n; next++) {
+                    if (graph[route][next] && !visit[next]) {
+                        queue.offer(next);
+                        visit[next] = true;
                     }
-                    for (int next : routes[route]) {
-                        if (!busVisit.contains(next)) {
-                            q.offer(next);
-                            busVisit.add(next);
-                        }
-                    }
-                    visit[route] = true;
                 }
             }
             res++;
         }
 
         return -1;
+    }
+
+    private boolean isConnected(int[] a, int[] b) {
+        int i = 0; 
+        int j = 0;
+
+        while (i < a.length && j < b.length) {
+            if (a[i] == b[j]) {
+                return true;
+            }
+
+            if (a[i] < b[j]) {
+                i++;
+            } else {
+                j++;
+            }
+        }
+        return false;
     }
 }
