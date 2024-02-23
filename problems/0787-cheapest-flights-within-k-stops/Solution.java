@@ -1,38 +1,44 @@
 class Solution {
+    private final int MAX = 1000000000;
+
     public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
-        List<List<int[]>> graph = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            graph.add(new ArrayList<>());
-        }
+        int[][] graph = new int[n][n];
+
         for (int[] flight : flights) {
-            graph.get(flight[0]).add(flight);
+            graph[flight[1]][flight[0]] = flight[2];
         }
 
-        int[] prices = new int[n];
-        Arrays.fill(prices, Integer.MAX_VALUE);
+        int[][] dist = new int[n][k + 2];
+        for (int[] d : dist) {
+            Arrays.fill(d, -1);
+        }
 
-        Queue<int[]> q = new LinkedList<>();
-        q.offer(new int[] {src, 0});
+        int res = recur(dst, k + 1, src, graph, dist);
+        
+        return res == MAX ? -1 : res;
+    }
 
-        while (k-- >= 0 && !q.isEmpty()) {
-            int size = q.size();
-            while (size-- > 0) {
-                int[] cur = q.poll();
-                int from = cur[0];
-                int curPrice = cur[1];
+    private int recur(int node, int k, int target, int[][] graph, int[][] dist) {
+        if (node == target) {
+            return 0;
+        }
 
-                for (int[] f : graph.get(from)) {
-                    int to = f[1];
-                    int price = f[2];
+        if (k == 0) {
+            return MAX;
+        }
 
-                    int totalPrice = curPrice + price;
-                    if (totalPrice < prices[to]) {
-                        prices[to] = totalPrice;
-                        q.offer(new int[] {to, totalPrice});
-                    }
-                }
+        if (dist[node][k] != -1) {
+            return dist[node][k];
+        }
+
+        int res = MAX;
+        for (int i = 0; i < graph.length; i++) {
+            if (graph[node][i] == 0) {
+                continue;
             }
+            res = Math.min(res, graph[node][i] + recur(i, k - 1, target, graph, dist));
         }
-        return prices[dst] == Integer.MAX_VALUE ? -1 : prices[dst];
+
+        return dist[node][k] = res;
     }
 }
