@@ -2,24 +2,49 @@ class Solution {
     public long countSubarrays(int[] nums, int minK, int maxK) {
         int n = nums.length;
 
-        int minIdx = -1;
-        int maxIdx = -1;
-        int leftIdx = -1;
+        int minCount = 0;
+        int maxCount = 0;
+        int leftCount = 0;
 
         long res = 0;
-        for (int i = 0; i < n; i++) {
-            if (nums[i] < minK || nums[i] > maxK) {
-                leftIdx = i;
-            }
-            if (nums[i] == minK) {
-                minIdx = i;
-            }
-            if (nums[i] == maxK) {
-                maxIdx = i;
+
+        for (int l = 0, r = 0; r < n; r++) {
+            if (nums[r] < minK || nums[r] > maxK) {
+                minCount = 0;
+                maxCount = 0;
+                leftCount = 0;
+                l = r + 1;
+                continue;
             }
 
-            res += Math.max(0, Math.min(minIdx, maxIdx) - leftIdx);
+            if (nums[r] == minK) {
+                minCount++;
+            } 
+            if (nums[r] == maxK) {
+                maxCount++;
+            } 
+
+            if (minCount >= 1 && maxCount >= 1) {
+                while (true) {
+                    if (nums[l] == minK) {
+                        if (minCount == 1) {
+                            break;
+                        }
+                        minCount--;
+                    } else if (nums[l] == maxK) {
+                        if (maxCount == 1) {
+                            break;
+                        }
+                        maxCount--;
+                    } 
+                    leftCount++;
+                    l++;
+                }
+                
+                res += leftCount + 1;
+            }
         }
+
         return res;
     }
 }
