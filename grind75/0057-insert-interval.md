@@ -59,7 +59,7 @@ class Solution {
 ```
 
 ## Complexity
-- Time complexity: O(n)
+- Time complexity: O(n)    
 병합을 위한 순회와 결과 저장을 위한 순회로 시간복잡도는 O(n).
 
 - Space complexity: O(1)   
