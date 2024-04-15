@@ -22,10 +22,13 @@ class Solution {
         if (root == null) {
             return 0;
         }
+
         sum = sum * 10 + root.val;
+
         if (root.left == null && root.right == null) {
             return sum;
         }
+
         return recur(root.left, sum) + recur(root.right, sum);
     }
 }
