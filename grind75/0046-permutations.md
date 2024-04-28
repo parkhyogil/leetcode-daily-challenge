@@ -38,8 +38,9 @@ class Solution {
 ```
 
 ## Complexity
+`n`은 `nums`의 길이.
 - Time complexity: O(n!)\
-재귀함수의 가지는 `n`개에서 1개로 깊어질수록 줄어든다. `n`은 `nums`의 길이.
+재귀함수의 가지는 `n`개에서 1개로 깊어질수록 줄어든다. 
 
 - Space complexity: O(n)\
-결과를 제외하고 사용된 공간은 재귀함수에서 사용한 콜 스택과 `permu`의 공간. `n`은 `nums`의 길이.
+결과를 제외하고 사용된 공간은 재귀함수에서 사용한 콜 스택과 `permu`의 공간.

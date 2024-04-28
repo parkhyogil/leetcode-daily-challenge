@@ -57,8 +57,9 @@ class Solution {
 ```
 
 ## Complexity
+`n`은 노드의 개수, `m`은 간선의 개수
 - Time complexity: O(n + m)\
-그래프를 순회하면서 사용한 시간. `n`은 노드의 개수, `m`은 간선의 개수
+그래프를 순회하면서 사용한 시간.
 
 - Space complexity: O(n + m)\
-그래프에서 사용한 공간. `n`은 노드의 개수, `m`은 간선의 개수
+그래프에서 사용한 공간.

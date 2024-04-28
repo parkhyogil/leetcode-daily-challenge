@@ -73,10 +73,10 @@ class Trie {
 ```
 
 ## Complexity
+`n`은 `word`의 길이. `m`은 삽입된 `word`의 문자 개수.
 - Time complexity: 
-  - insert: O(n). `n` 은 `word`의 길이.
-  - search: O(n). `n` 은 `word`의 길이.
-  - startsWith: O(n). `n` 은 `word`의 길이.
+  - insert: O(n).
+  - search: O(n).
+  - startsWith: O(n).
 
 - Space complexity: O(m)\
-`m`은 삽입된 `word`의 문자 개수.

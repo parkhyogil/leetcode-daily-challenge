@@ -63,8 +63,9 @@ class Solution {
 ```
 
 ## Complexity
+`n`은 트리의 노드 개수.
 - Time complexity: O(n)   
-트리 전체를 한번 순회. `n`은 트리의 노드 개수. 
+트리 전체를 한번 순회.  
 
 - Space complexity: O(n)   
-`queue`에 최대 n/2 개의 노드가 들어갈 수 있다. `n`은 트리의 노드 개수.
+`queue`에 최대 n/2 개의 노드가 들어갈 수 있다.

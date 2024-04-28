@@ -63,8 +63,9 @@ class Solution {
 ```
 
 ## Complexity
+`n`은 그래프 노드의 개수.
 - Time complexity: O(n)   
-복사를 위해 그래프를 한번 순회한다. `n`은 그래프 노드의 개수.
+복사를 위해 그래프를 한번 순회한다. 
 
 - Space complexity: O(n)   
-`map`에 복사한 노드를 저장한다. `n`은 그래프 노드의 개수.
+`map`에 복사한 노드를 저장한다. 

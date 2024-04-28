@@ -38,8 +38,9 @@ class Solution {
 ```
 
 ## Complexity
+`n`은 `nums`의 길이.
 - Time complexity: O(n)\
-두번의 반복문으로 소요된 시간. `n`은 `nums`의 길이.
+두번의 반복문으로 소요된 시간.
 
 - Space complexity: O(1)\
 `prefix`, `suffix`를 저장한 공간.

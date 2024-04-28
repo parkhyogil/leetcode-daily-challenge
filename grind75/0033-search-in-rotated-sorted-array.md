@@ -48,6 +48,7 @@ class Solution {
 ```
 
 ## Complexity
+`n`은 `nums`의 길이.
 - Time complexity: O(logN)\
 배열의 길이를 반으로 나눠가며 탐색.
 

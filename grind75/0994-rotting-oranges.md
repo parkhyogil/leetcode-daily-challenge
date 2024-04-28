@@ -62,8 +62,9 @@ class Solution {
 ```
 
 ## Complexity
+`m`, `n`은 `grid`의 행과 열.
 - Time complexity: O(m * n)\
-`grid`탐색과 BFS로 사용한 시간. `m`, `n`은 `grid`의 행과 열.
+`grid`탐색과 BFS로 사용한 시간. 
 
 - Space complexity: O(m * n)\
-`queue`에서 사용한 공간. `m`, `n`은 `grid`의 행과 열.
+`queue`에서 사용한 공간. 

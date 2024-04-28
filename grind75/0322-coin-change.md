@@ -35,7 +35,8 @@ class Solution {
 ```
 
 ## Complexity
+`m`은 `coins`의 길이, `n`은 `amount`.
 - Time complexity: O(m * n)\
-이중반복문으로 사용한 시간. `m`은 `coins`의 길이, `n`은 `amount`.
+이중반복문으로 사용한 시간. 
 - Space complexity: O(n)\
-`dp`배열에서 사용한 공간. `n`은 `amount`.
+`dp`배열에서 사용한 공간.

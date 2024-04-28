@@ -40,8 +40,9 @@ class Solution {
 ```
 
 ## Complexity
+`n`은 `tokens`의 길이.
 - Time complexity: O(n)\
-`tokens`를 순회한다. `n`은 `tokens`의 길이.
+`tokens`를 순회한다. 
 
 - Space complexity: O(n)\
-`stack`에서 사용한 공간. `n`은 `tokens`의 길이.
+`stack`에서 사용한 공간.

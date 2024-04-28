@@ -31,7 +31,7 @@ class Solution {
 
 ## Complexity
 - Time complexity: O(n)   
-```nums``` 배열을 한번 순회하기 때문에 시간복잡도는 O(n)이다.
+`nums` 배열을 한번 순회하기 때문에 시간복잡도는 O(n)이다.
 
 - Space complexity: O(1)   
-```sum```, ```res``` 변수를 저장하는 공간이 필요하기 때문에 공간복잡도는 O(1)이다.
+`sum`, `res` 변수를 저장하는 공간이 필요하기 때문에 공간복잡도는 O(1)이다.

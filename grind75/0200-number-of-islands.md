@@ -45,9 +45,10 @@ class Solution {
 ```
 
 ## Complexity
+`m`과 `n`은 `grid`의 행과 열의 길이.
 - Time complexity: O(m * n)\
-`grid`의 모든 셀을 탐색한다. `m`과 `n`은 `grid`의 행과 열의 길이.
+`grid`의 모든 셀을 탐색한다. 
 
 - Space complexity: O(m * n)\
-재귀함수 호출로 인한 콜스택의 최대 깊이. `m`과 `n`은 `grid`의 행과 열의 길이.
+재귀함수 호출로 인한 콜스택의 최대 깊이.
 
