@@ -4,7 +4,7 @@
 `timestamp`가 오름차순으로 관리가 되니 선형탐색이 아닌 이진탐색으로 검색 시간을 줄일 수 있다.
 
 ## Algorithm
-`key`를 key로 하고 `timestamp-value`를 쌍으로 관리하는 List를 value로 하는 Map `map`을 선언.\
+`key`를 key로 하고 `timestamp-value`를 쌍으로 관리하는 List를 value로 하는 Map `map`을 선언.
 - set:
   1. `map`에 `key`가 없을 경우 새 리스트를 저장하고 이진탐색을 편하게 하기 위해 `0-""`를 리스트에 저장한다.
   2. 리스트에 `timestamp-value` 쌍을 저장한다.
