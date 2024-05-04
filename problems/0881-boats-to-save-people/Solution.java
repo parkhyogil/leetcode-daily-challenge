@@ -1,38 +1,36 @@
 class Solution {
     public int numRescueBoats(int[] people, int limit) {
-        int n = people.length;
+        sort(people);
 
-        int[] count = new int[limit + 1];
-        for (int p : people) {
-            count[p]++;
-        }
+        int l = 0;
+        int r = people.length - 1;
 
         int res = 0;
-        
-        int min = 1;
-        int max = limit;
-
-        while (min < max) {
-            if (count[max] == 0) {
-                max--;
-            } else if (count[min] == 0) {
-                min++;
-            } else if (min + max <= limit) {
-                int saved = Math.min(count[min], count[max]);
-                res += saved;
-                count[min] -= saved;
-                count[max] -= saved;
+        while (l <= r) {
+            if (l == r || people[l] + people[r] > limit) {
+                r--;
             } else {
-                res += count[max];
-                count[max] = 0;
+                l++;
+                r--;
             }
-        }
-        
-        if (min * 2 > limit) {
-            res += count[min];
-        } else {
-            res += (count[min] + 1) / 2;
+            res++;
         }
         return res;
+    }
+
+    private void sort(int[] nums) {
+        int[] count = new int[30001];
+        for (int num : nums) {
+            count[num]++;
+        }
+
+        int min = 0;
+        for (int i = 0; i < nums.length; i++) {
+            while (count[min] == 0) {
+                min++;
+            }
+            nums[i] = min;
+            count[min]--;
+        }
     }
 }
