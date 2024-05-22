@@ -1,45 +1,40 @@
 class Solution {
     public List<List<String>> partition(String s) {
-        int len = s.length();
+        int n = s.length();
 
-        List<List<String>> palindromeList = new ArrayList<>();
-        for (int i = 0; i < len; i++) {
-            palindromeList.add(new ArrayList<>());
+        boolean[][] isPalindrome = new boolean[n][n];
+        for (int i = 0; i < n; i++) {
+            isPalindrome[i][i] = true;
+            if (i + 1 < n && s.charAt(i) == s.charAt(i + 1)) {
+                isPalindrome[i][i + 1] = true;
+            }
         }
-        for (int start = 0; start < len; start++) {
-            for (int end = start; end < len; end++) {
-                if (isPalindrome(s, start, end)) {
-                    palindromeList.get(start).add(s.substring(start, end + 1));
-                }
+
+        for (int diff = 2; diff < n; diff++) {
+            for (int left = 0; left + diff < n; left++) {
+                isPalindrome[left][left + diff] = s.charAt(left) == s.charAt(left + diff) && isPalindrome[left + 1][left + diff - 1];
             }
         }
 
         List<List<String>> res = new ArrayList<>();
-        backtrack(0, new ArrayList<>(), res, palindromeList);
+
+        recur(0, s, isPalindrome, new ArrayList<>(), res);
+
         return res;
     }
 
-    private void backtrack(int start, List<String> partition, List<List<String>> res, List<List<String>> palindromeList) {
-        if (start == palindromeList.size()) {
-            res.add(new ArrayList<>(partition));
+    private void recur(int idx, String s, boolean[][] isPalindrome, List<String> list, List<List<String>> res) {
+        if (idx == s.length()) {
+            res.add(new ArrayList<>(list));
             return;
         }
 
-        for (String pal : palindromeList.get(start)) {
-            partition.add(pal);
-            backtrack(start + pal.length(), partition, res, palindromeList);
-            partition.remove(partition.size() - 1);
-        }
-    }
-
-    private boolean isPalindrome(String s, int start, int end) {
-        while (start < end) {
-            if (s.charAt(start) != s.charAt(end)) {
-                return false;
+        for (int i = 0; i < s.length(); i++) {
+            if (isPalindrome[idx][i]) {
+                list.add(s.substring(idx, i + 1));
+                recur(i + 1, s, isPalindrome, list, res);
+                list.remove(list.size() - 1);
             }
-            start++;
-            end--;
         }
-        return true;
     }
 }
