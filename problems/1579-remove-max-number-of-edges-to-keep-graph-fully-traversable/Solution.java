@@ -1,56 +1,37 @@
 class Solution {
-    public int maxNumEdgesToRemove(int n, int[][] edges) {
-        DisjointSet alice = new DisjointSet(n);
-        DisjointSet bob = new DisjointSet(n);
-
-        int res = 0;
-        for (int[] e : edges) {
-            int type = e[0];
-            int u = e[1] - 1;
-            int v = e[2] - 1;
-
-            if (type == 3) {
-                if (alice.isConnected(u, v)) {
-                    res++;
-                } else {
-                    alice.union(u, v);
-                    bob.union(u, v);
-                }
-            }
-        }
-        for (int[] e : edges) {
-            int type = e[0];
-            int u = e[1] - 1;
-            int v = e[2] - 1;
-
-            if (type == 1) {
-                if (alice.isConnected(u, v)) {
-                    res++;
-                } else {
-                    alice.union(u, v);
-                }
-            } else if (type == 2) {
-                if (bob.isConnected(u, v)) {
-                    res++;
-                } else {
-                    bob.union(u, v);
-                }
-            }
-        }
-        return alice.isAllConnected() && bob.isAllConnected() ? res : -1;
-    }
-
     class DisjointSet {
-        private int n;
-        private int[] root;
+        private int size;
+        private int[] root, setSize;
 
-        public DisjointSet(int n) {
-            this.n = n;
-            this.root = new int[n];
+        public DisjointSet(int size) {
+            this.size = size;
 
-            for (int i = 0; i < n; i++) {
+            root = new int[size];
+            setSize = new int[size];
+
+            for (int i = 0; i < size; i++) {
                 root[i] = i;
+                setSize[i] = 1;
             }
+        }
+
+        public boolean union(int a, int b) {
+            a = findRoot(a);
+            b = findRoot(b);
+
+            if (a == b) {
+                return false;
+            }
+
+            if (a < b) {
+                root[b] = a;
+                setSize[a] += setSize[b];
+            } else {
+                root[a] = b;
+                setSize[b] += setSize[a];
+            }
+
+            return true;
         }
 
         public int findRoot(int child) {
@@ -60,29 +41,64 @@ class Solution {
             return root[child] = findRoot(root[child]);
         }
 
-        public void union(int a, int b) {
-            a = findRoot(a);
-            b = findRoot(b);
+        public boolean isFullyTraversable() {
+            return setSize[0] == size;
+        }
+    }
 
-            if (a < b) {
-                root[b] = a;
-            } else {
-                root[a] = b;
+    public int maxNumEdgesToRemove(int n, int[][] edges) {
+        List<List<int[]>> edgesByType = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            edgesByType.add(new ArrayList<>());
+        }
+
+        for (int[] edge : edges) {
+            edgesByType.get(edge[0] - 1).add(edge);
+        }
+
+        int numOfEdges = edges.length;
+        int numOfUsedEdges = 0;
+
+        DisjointSet alice = new DisjointSet(n);
+        DisjointSet bob = new DisjointSet(n);
+
+        for (int[] edge : edgesByType.get(2)) {
+            int u = edge[1] - 1;
+            int v = edge[2] - 1;
+            
+            if (alice.union(u, v)) {
+                bob.union(u, v);
+
+                numOfUsedEdges++;
             }
         }
 
-        public boolean isConnected(int a, int b) {
-            return findRoot(a) == findRoot(b);
+        for (int[] edge : edgesByType.get(0)) {
+            int u = edge[1] - 1;
+            int v = edge[2] - 1;
+            
+            if (alice.union(u, v)) {
+                numOfUsedEdges++;
+            }
         }
 
-        public boolean isAllConnected() {
-            int r = findRoot(0);
-            for (int i = 1; i < n; i++) {
-                if (r != findRoot(i)) {
-                    return false;
-                }
-            }
-            return true;
+        if (!alice.isFullyTraversable()) {
+            return -1;
         }
+
+        for (int[] edge : edgesByType.get(1)) {
+            int u = edge[1] - 1;
+            int v = edge[2] - 1;
+            
+            if (bob.union(u, v)) {
+                numOfUsedEdges++;
+            }
+        }
+
+        if (!bob.isFullyTraversable()) {
+            return -1;
+        }
+
+        return numOfEdges - numOfUsedEdges;
     }
 }
