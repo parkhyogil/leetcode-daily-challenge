@@ -46,6 +46,6 @@ class Solution {
 
 ## Complexity
 `n`은 `gas station`의 길이.
-- Time complexity: O(n)\
-- Space complexity: O(1)\
+- Time complexity: O(n)
+- Space complexity: O(1)
 
