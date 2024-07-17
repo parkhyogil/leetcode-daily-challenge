@@ -34,5 +34,5 @@ class Solution {
 
 ## Complexity
 `n`은 배열 `strs`의 길이, `m`은 문자열 `str`의 최대 길이.
-- Time complexity: O(n * mlogm)\
-- Space complexity: O(n * m)\
+- Time complexity: O(n * mlogm)
+- Space complexity: O(n * m)
