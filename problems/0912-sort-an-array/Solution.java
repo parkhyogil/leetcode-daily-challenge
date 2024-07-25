@@ -1,79 +1,63 @@
 class Solution {
     public int[] sortArray(int[] nums) {
-        return quickSort(nums);
-    }
+        sort(nums);
 
-    public int[] mergeSort(int[] nums) {
-        mergeSortRec(nums, new int[nums.length], 0, nums.length - 1);
         return nums;
     }
 
-    private void mergeSortRec(int[] nums, int[] tmp, int lo, int hi) {
-        if (lo >= hi) {
+    public void sort(int[] nums) {
+        quickSort(0, nums.length - 1, nums);
+    }
+
+    private void quickSort(int l, int r, int[] nums) {
+        if (l >= r) {
             return;
         }
-        int mid = (lo + hi) / 2;
-        mergeSortRec(nums, tmp, lo, mid);
-        mergeSortRec(nums, tmp, mid + 1, hi);
-        merge(nums, tmp, lo, mid, hi);
-    }
 
-    private void merge(int[] nums, int[] tmp, int lo, int mid, int hi) {
-        for (int i = lo; i <= mid; i++) {
-            tmp[i] = nums[i];
-        }
-        int i = lo;
-        int j = mid + 1;
-
-        int idx = lo;
-        while (i <= mid && j <= hi) {
-            if (tmp[i] <= nums[j]) {
-                nums[idx++] = tmp[i++];
-            } else {
-                nums[idx++] = nums[j++];
-            }
-        }
-        while (i <= mid) {
-            nums[idx++] = tmp[i++];
-        }
-    }
-
-    public int[] quickSort(int[] nums) {
-        quickSortRec(nums, 0, nums.length - 1);
-        return nums;
-    }
-
-    private void quickSortRec(int[] nums, int lo, int hi) {
-        if (lo >= hi) {
+        if (r - l + 1 <= 16) {
+            insertionSort(l, r, nums);
             return;
         }
-        int[] p = partition(nums, lo, hi);
-        quickSortRec(nums, lo, p[0]);
-        quickSortRec(nums, p[1], hi);
+        
+        int pivotPos = partition(l, r, nums);
+
+        quickSort(l, pivotPos, nums);
+        quickSort(pivotPos + 1, r, nums);
     }
 
-    private int[] partition(int[] nums, int lo, int hi) {
-        int pivot = nums[(lo + hi) / 2];
+    private int partition(int l, int r, int[] nums) {
+        int pivotVal = nums[(l + r) / 2];
 
-        int i = lo;
-        int j = hi;
+        int i = l; 
+        int j = r;
+
         while (i <= j) {
-            while (nums[i] < pivot) {
+            while (nums[i] < pivotVal) {
                 i++;
-            }
-            while (nums[j] > pivot) {
+            } 
+            while (nums[j] > pivotVal) {
                 j--;
             }
+
             if (i < j) {
-                swap(nums, i++, j--);
+                swap(i++, j--, nums);
             } else {
                 i++;
             }
         }
-        return new int[] {j, j + 1};
+
+        return j;
     }
 
-    private void swap(int[] nums, int i, int j) {
+    private void insertionSort(int l, int r, int[] nums) {
+        for (int i = l + 1; i <= r; i++) {
+            for (int j = i - 1; j >= l && nums[j] > nums[j + 1]; j--) {
+                swap(j, j + 1, nums);
+            }
+        }
+    }
+
+    private void swap(int i, int j, int[] nums) {
         int tmp = nums[i];
         nums[i] = nums[j];
         nums[j] = tmp;
