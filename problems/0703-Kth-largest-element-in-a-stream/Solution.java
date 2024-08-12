@@ -1,15 +1,15 @@
 class KthLargest {
+    private int capacity, size;
     private int[] heap;
-    private int capacity, last;
 
     public KthLargest(int k, int[] nums) {
-        capacity = k;
-        heap = new int[capacity + 1];
-        last = 0;
+        this.capacity = k;
+        this.size = 0;
+        heap = new int[k + 1];
 
         for (int num : nums) {
             push(num);
-        }    
+        }
     }
     
     public int add(int val) {
@@ -17,40 +17,43 @@ class KthLargest {
         return heap[1];
     }
 
-    private void push(int val) {
-        if (last == capacity) {
-            if (val > heap[1]) {
-                heap[1] = val;
-                siftDown(1);
-            }
-        } else {
-            heap[++last] = val;
-            siftUp(last);
+    private void push(int num) {
+        if (size < capacity) {
+            heap[++size] = num;
+            siftUp(size);
+        } else if (num > heap[1]) {
+            heap[1] = num;
+            siftDown(1);
         }
     }
 
-    private void siftUp(int node) {
-        while (node > 1) {
-            int parent = node / 2;
-            if (heap[parent] < heap[node]) {
-                break;
-            }
-            swap(node, parent);
-            node = parent;
+    private void siftUp(int idx) {
+        if (idx == 1) {
+            return;
+        }
+
+        int parent = idx / 2;
+
+        if (heap[idx] < heap[parent]) {
+            swap(idx, parent);
+            siftUp(parent);
         }
     }
 
-    private void siftDown(int node) {
-        while (node * 2 <= last) {
-            int child = node * 2;
-            if (child + 1 <= last && heap[child] > heap[child + 1]) {
-                child++;
-            }
-            if (heap[child] > heap[node]) {
-                break;
-            }
-            swap(node, child);
-            node = child;
+    private void siftDown(int idx) {
+        int child = idx * 2;
+
+        if (child > size) {
+            return;
+        }
+
+        if (child + 1 <= size && heap[child + 1] < heap[child]) {
+            child++;
+        }
+
+        if (heap[idx] > heap[child]) {
+            swap(idx, child);
+            siftDown(child);
         }
     }
 
