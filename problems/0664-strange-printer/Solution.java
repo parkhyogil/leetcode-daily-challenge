@@ -1,34 +1,35 @@
 class Solution {
     public int strangePrinter(String s) {
-        StringBuilder sb = new StringBuilder();
-        for (char c : s.toCharArray()) {
-            if (sb.length() == 0 || sb.charAt(sb.length() - 1) != c) {
-                sb.append(c);
-            }
-        }
-
-        s = sb.toString();
         int n = s.length();
 
-        return recur(0, n - 1, s, new int[n][n]);
+        int[][] cache = new int[n][n];
+
+        return dfs(0, n - 1, s.toCharArray(), cache);
     }
 
-    private int recur(int left, int right, String s, int[][] memo) {
+    private int dfs(int left, int right, char[] chars, int[][] cache) {
         if (left == right) {
             return 1;
         }
-        if (memo[left][right] != 0) {
-            return memo[left][right];
+
+        if (cache[left][right] != 0) {
+            return cache[left][right];
         }
 
-        if (s.charAt(left) == s.charAt(right)) {
-            return memo[left][right] = recur(left + 1, right, s, memo);
-        }
+        int result = right - left + 1;
 
-        int res = Integer.MAX_VALUE;
         for (int i = left; i < right; i++) {
-            res = Math.min(res, recur(left, i, s, memo) + recur(i + 1, right, s, memo));
+            int leftPart = dfs(left, i, chars, cache);
+            int rightPart = dfs(i + 1, right, chars, cache);
+
+            if ((leftPart == 1 && (chars[left] == chars[i + 1] || chars[left] == chars[right])) 
+                || (rightPart == 1 && (chars[right] == chars[left] || chars[right] == chars[i]))) {
+                result = Math.min(result, Math.max(leftPart, rightPart));
+            } else {
+                result = Math.min(result, leftPart + rightPart);
+            }
         }
-        return memo[left][right] = res;
+
+        return cache[left][right] = result;
     }
 }
