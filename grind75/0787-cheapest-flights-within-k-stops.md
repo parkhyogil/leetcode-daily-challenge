@@ -1,8 +1,7 @@
 # [787. Cheapest Flights Within K Stops](https://leetcode.com/problems/cheapest-flights-within-k-stops/)
 
 ## Intuition
-BFS 기법으로 사용해 최소 비용을 계산한다.\
-아래 그림처럼 `k + 1`번 레벨 단위로 최소 비용을 갱신한다.\
+BFS 기법으로 사용해 아래 그림처럼 `k + 1`번 레벨 단위로 최소 비용을 갱신한다.\
 ![0787-01.png](../img/0787-01.png)
 
 ## Algorithm
