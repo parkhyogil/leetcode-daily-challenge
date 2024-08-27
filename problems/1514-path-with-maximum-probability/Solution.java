@@ -1,6 +1,59 @@
 class Solution {
-    public double maxProbability(int n, int[][] edges, double[] succProb, int start, int end) {
+    class Edge implements Comparable<Edge> {
+        public int node;
+        public double probability;
+
+        public Edge(int node, double probability) {
+            this.node = node;
+            this.probability = probability;
+        }
+
+        @Override
+        public int compareTo(Edge e) {
+            return Double.compare(e.probability, this.probability);
+        }
+    }
+
+    public double maxProbability(int n, int[][] edges, double[] succProb, int start_node, int end_node) {
+        List<List<Edge>> graph = buildGraph(n, edges, succProb);
+
+        return runDijkstra(n, start_node, end_node, graph);
+    }
+
+    private double runDijkstra(int n, int source, int destination, List<List<Edge>> graph) {
+        PriorityQueue<Edge> priorityQueue = new PriorityQueue<>();
+        double[] probabilities = new double[n];
+
+        priorityQueue.offer(new Edge(source, 1));
+        probabilities[source] = 1;
+
+        while (!priorityQueue.isEmpty()) {
+            Edge edge = priorityQueue.poll();
+            
+            int node = edge.node;
+            double probability = edge.probability;
+
+            if (probability < probabilities[node]) {
+                continue;
+            }
+
+            for (Edge nextEdge : graph.get(node)) {
+                int nextNode = nextEdge.node;
+                double nextProbability = nextEdge.probability * probability;
+
+                if (nextProbability > probabilities[nextNode]) {
+                    priorityQueue.offer(new Edge(nextNode, nextProbability));
+                    probabilities[nextNode] = nextProbability;
+                }
+            }
+        }
+
+        return probabilities[destination];
+    }
+
+    private List<List<Edge>> buildGraph(int n, int[][] edges, double[] succProb) {
         List<List<Edge>> graph = new ArrayList<>();
+
         for (int i = 0; i < n; i++) {
             graph.add(new ArrayList<>());
         }
@@ -14,40 +67,6 @@ class Solution {
             graph.get(v).add(new Edge(u, w));
         }
 
-        PriorityQueue<Edge> pq = new PriorityQueue<>((a, b) -> Double.compare(b.w, a.w));
-        double[] prob = new double[n];
-
-        pq.offer(new Edge(start, 1));
-        prob[start] = 1;
-
-        while (!pq.isEmpty()) {
-            Edge curr = pq.poll();
-            int u = curr.v;
-            double w = curr.w;
-
-            if (prob[u] > w) {
-                continue;
-            }
-
-            for (Edge e : graph.get(u)) {
-                int v = e.v;
-                double vw = w * e.w;
-                if (vw > prob[v]) {
-                    prob[v] = vw;
-                    pq.offer(new Edge(v, vw));
-                }
-            }
-        }
-        return prob[end];
-    }
-
-    class Edge {
-        public int v;
-        public double w;
-
-        public Edge(int v, double w) {
-            this.v = v;
-            this.w = w;
-        }
+        return graph;
     }
 }
