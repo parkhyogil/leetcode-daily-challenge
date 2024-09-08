@@ -11,34 +11,43 @@
 class Solution {
     public ListNode[] splitListToParts(ListNode head, int k) {
         int length = getLength(head);
-        
-        ListNode[] res = new ListNode[k];
-        res[0] = head;
 
-        for (int i = 0; i < k - 1 && res[i] != null; i++) {
-            ListNode node = res[i];
-            
-            int size = length / k;
-            if (i < length % k) {
-                size++;
-            }
+        int size = length / k;
+        int remainder = length % k;
 
-            for (int j = 0; j < size - 1; j++) {
-                node = node.next;
-            }
+        ListNode[] result = new ListNode[k];
 
-            res[i + 1] = node.next;
-            node.next = null;
+        for (int i = 0; i < k && head != null; i++) {
+            result[i] = head;
+            head = sublist(head, (i < remainder ? size + 1 : size));
         }
-        return res;
+
+        return result;
+    }
+
+    private ListNode sublist(ListNode head, int fromIndex) {
+        int index = 0;
+
+        while (head != null && index < fromIndex - 1) {
+            head = head.next;
+            index++;
+        }
+
+        ListNode newHead = head.next;
+
+        head.next = null;
+
+        return newHead;
     }
 
     private int getLength(ListNode head) {
-        int res = 0;
+        int result = 0;
+
         while (head != null) {
             head = head.next;
-            res++;
+            result++;
         }
-        return res;
+
+        return result;
     }
 }
