@@ -1,61 +1,74 @@
 class Solution {
-    private Node root;
-    private int[] cache;
+    class TrieNode {
+        boolean isEndOfWord;
+        TrieNode[] children;
+
+        TrieNode() {
+            isEndOfWord = false;
+            children = new TrieNode[26];
+        }
+    }
+
+    TrieNode root;
 
     public int minExtraChar(String s, String[] dictionary) {
-        root = new Node();
-        cache = new int[s.length()];
-        Arrays.fill(cache, -1);
+        initializeTrie(dictionary);
 
-        for (String word : dictionary) {
-            insert(word);
-        }
+        int n = s.length();
 
-        return recur(0, s);
+        int[] cache = new int[n];
+        Arrays.fill(cache, -1); 
+
+        return findMinExtraChar(0, n, s, cache);
     }
 
-    private int recur(int idx, String s) {
-        if (idx == s.length()) {
+    int findMinExtraChar(int index, int len, String s, int[] cache) {
+        if (index == len) {
             return 0;
+        } 
+
+        if (cache[index] != -1) {
+            return cache[index];
         }
 
-        if (cache[idx] != -1) {
-            return cache[idx];
-        }
+        int i = index;
+        int minNum = len;
 
-        int res = s.length();
+        TrieNode node = root;
 
-        Node node = root;
-        for (int i = idx; i < s.length() && node != null; i++) {
+        while (i < len && node != null) {
             node = node.children[s.charAt(i) - 'a'];
 
-            res = Math.min(res, i - idx + 1 + recur(i + 1, s));
-            if (node != null && node.isWord) {
-                res = Math.min(res, recur(i + 1, s));
+            if (node != null && node.isEndOfWord) {
+                minNum = Math.min(minNum, findMinExtraChar(i + 1, len, s, cache));
+            } else {
+                minNum = Math.min(minNum, findMinExtraChar(i + 1, len, s, cache) + (i - index + 1));
             }
+
+            i++;
         }
-        return cache[idx] = res;
+
+        return cache[index] = minNum;
     }
 
-    private void insert(String s) {
-        Node node = root;
+    void initializeTrie(String[] words) {
+        root = new TrieNode();
 
-        for (char c : s.toCharArray()) {
+        for (String word : words) {
+            insert(word);
+        }
+    }
+
+    void insert(String word) {
+        TrieNode node = root;
+
+        for (char c : word.toCharArray()) {
             if (node.children[c - 'a'] == null) {
-                node.children[c - 'a'] = new Node();
+                node.children[c - 'a'] = new TrieNode();
             }
             node = node.children[c - 'a'];
         }
-        node.isWord = true;
-    }
 
-    class Node {
-        private Node[] children;
-        private boolean isWord;
-
-        public Node() {
-            children = new Node[26];
-            isWord = false;
-        }
+        node.isEndOfWord = true;
     }
 }
