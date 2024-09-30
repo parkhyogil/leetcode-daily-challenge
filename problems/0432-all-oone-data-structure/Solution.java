@@ -4,7 +4,7 @@ class AllOne {
     Map<Integer, LinkedList<String>> freqToKeyListMap;
     Map<String, Integer> keyToFreqMap;
     Map<String, Node<String>> keyToKeyNodeMap;
-    
+
     public AllOne() {
         frequencyList = new LinkedList<>();
         freqToKeyListMap = new HashMap<>();
@@ -12,19 +12,15 @@ class AllOne {
         freqToFreqNodeMap = new HashMap<>();
         keyToKeyNodeMap = new HashMap<>();
     }
-
+    
     public void inc(String key) {
         if (!keyToFreqMap.containsKey(key)) {
-            Node<String> keyNode = new Node<>(key);
-            
-            keyToKeyNodeMap.put(key, keyNode);
-            keyToFreqMap.put(key, 1);
-
             if (!freqToFreqNodeMap.containsKey(1)) {
-                addNewFreqNextTo(frequencyList.head, 1);
+                addFreqNodeNextTo(frequencyList.head, 1);
             }
-            freqToKeyListMap.get(1).add(keyNode);
 
+            keyToKeyNodeMap.put(key, new Node<>(key));
+            addKeyToFreq(key, 1);
             return;
         }
 
@@ -32,22 +28,19 @@ class AllOne {
         int nextFreq = freq + 1;
 
         if (!freqToFreqNodeMap.containsKey(nextFreq)) {
-            addNewFreqNextTo(freqToFreqNodeMap.get(freq), nextFreq);
+            addFreqNodeNextTo(freqToFreqNodeMap.get(freq), nextFreq);
         }
 
-        moveKeyToTargetFreq(key, freq, nextFreq);
+        removeKeyFromFreq(key, freq);
+        addKeyToFreq(key, nextFreq);
     }
 
     public void dec(String key) {
         if (keyToFreqMap.get(key) == 1) {
-            freqToKeyListMap.get(1).remove(keyToKeyNodeMap.get(key));
-            if (freqToKeyListMap.get(1).isEmpty()) {
-                removeFreq(1);
-            }
+            removeKeyFromFreq(key, 1);
 
             keyToFreqMap.remove(key);
             keyToKeyNodeMap.remove(key);
-
             return;
         }
 
@@ -55,10 +48,11 @@ class AllOne {
         int prevFreq = freq - 1;
 
         if (!freqToFreqNodeMap.containsKey(prevFreq)) {
-            addNewFreqNextTo(freqToFreqNodeMap.get(freq).prev, prevFreq);
+            addFreqNodeNextTo(freqToFreqNodeMap.get(freq).prev, prevFreq);
         }
 
-        moveKeyToTargetFreq(key, freq, prevFreq);
+        removeKeyFromFreq(key, freq);
+        addKeyToFreq(key, prevFreq);
     }
 
     public String getMaxKey() {
@@ -79,16 +73,18 @@ class AllOne {
         return freqToKeyListMap.get(minFreq).getFirst();
     }
 
-    void moveKeyToTargetFreq(String key, int freq, int targetFreq) {
+    void addKeyToFreq(String key, int freq) {
+        keyToFreqMap.put(key, freq);
+        freqToKeyListMap.get(freq).add(keyToKeyNodeMap.get(key));
+    }
+
+    void removeKeyFromFreq(String key, int freq) {
         Node<String> keyNode = keyToKeyNodeMap.get(key);
 
         freqToKeyListMap.get(freq).remove(keyNode);
         if (freqToKeyListMap.get(freq).isEmpty()) {
             removeFreq(freq);
         }
-
-        keyToFreqMap.put(key, targetFreq);
-        freqToKeyListMap.get(targetFreq).add(keyNode);
     }
 
     void removeFreq(int freq) {
@@ -98,7 +94,7 @@ class AllOne {
         freqToFreqNodeMap.remove(freq);
         freqToKeyListMap.remove(freq);
     }
-    void addNewFreqNextTo(Node<Integer> prevFreqNode, int freq) {
+    void addFreqNodeNextTo(Node<Integer> prevFreqNode, int freq) {
         Node<Integer> freqNode = new Node<>(freq);
 
         frequencyList.addNextTo(prevFreqNode, freqNode);
