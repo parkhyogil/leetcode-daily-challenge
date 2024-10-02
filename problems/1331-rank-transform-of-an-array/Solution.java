@@ -17,10 +17,9 @@ class Solution {
         rankArray[indexArray[0]] = 1;
 
         for (int i = 1; i < n; i++) {
+            rankArray[indexArray[i]] = rankArray[indexArray[i - 1]];
             if (arr[indexArray[i]] > arr[indexArray[i - 1]]) {
-                rankArray[indexArray[i]] = rankArray[indexArray[i - 1]] + 1;
-            } else {
-                rankArray[indexArray[i]] = rankArray[indexArray[i - 1]];
+                rankArray[indexArray[i]]++;
             }
         }
 
