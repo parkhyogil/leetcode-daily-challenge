@@ -3,24 +3,25 @@ class Solution {
         int m = s1.length();
         int n = s2.length();
 
-        int[] need = new int[26];
+        int[] charFrequency = new int[26];
+        
         for (char c : s1.toCharArray()) {
-            need[c - 'a']++;
+            charFrequency[c - 'a']++;
         }
 
-        int[] have = new int[26];
-        for (int left = 0, right = 0; right < n; right++) {
-            char c = s2.charAt(right);
+        for (int l = 0, r = 0; r < n; r++) {
+            int charIdx = s2.charAt(r) - 'a';
+            charFrequency[charIdx]--;
 
-            have[c - 'a']++;
-            while (have[c - 'a'] > need[c - 'a']) {
-                have[s2.charAt(left++) - 'a']--;
+            while (charFrequency[charIdx] < 0) {
+                charFrequency[s2.charAt(l++) - 'a']++;
             }
 
-            if (right - left + 1 == m) {
+            if (r - l + 1 == m) {
                 return true;
             }
         }
+
         return false;
     }
 }
