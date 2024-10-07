@@ -1,8 +1,6 @@
 class Solution {
     public int minLength(String s) {
-        int n = s.length();
-
-        char[] stack = new char[n];
+        char[] stack = new char[s.length()];
         int idx = -1;
 
         for (char c : s.toCharArray()) {
