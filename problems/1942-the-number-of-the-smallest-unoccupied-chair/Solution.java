@@ -22,17 +22,15 @@ class Solution {
                 unoccupiedChairs.offer(occupiedChairs.poll()[0]);
             }
 
-            if (unoccupiedChairs.isEmpty()) {
-                unoccupiedChairs.offer(++lastChair);
-            }
+            int chair = unoccupiedChairs.isEmpty() ? ++lastChair : unoccupiedChairs.poll();
 
             if (friend == targetFriend) {
-                break;
+                return chair;
             }
 
-            occupiedChairs.offer(new int[] {unoccupiedChairs.poll(), leaving});
+            occupiedChairs.offer(new int[] {chair, leaving});
         }
 
-        return unoccupiedChairs.poll();
+        return -1;
     }
 }
