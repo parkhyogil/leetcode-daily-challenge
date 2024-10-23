@@ -17,7 +17,7 @@ class Solution {
     public long kthLargestLevelSum(TreeNode root, int k) {
         List<Long> levelSums = new ArrayList<>();
 
-        inorderTraversal(0, root, levelSums);
+        preorderTraversal(0, root, levelSums);
 
         if (k > levelSums.size()) {
             return -1;
@@ -78,7 +78,7 @@ class Solution {
         nums.set(j, tmp);
     }
 
-    void inorderTraversal(int level, TreeNode root, List<Long> levelSums) {
+    void preorderTraversal(int level, TreeNode root, List<Long> levelSums) {
         if (root == null) {
             return;
         }
@@ -89,7 +89,7 @@ class Solution {
             levelSums.set(level, root.val + levelSums.get(level));
         }
 
-        inorderTraversal(level + 1, root.left, levelSums);
-        inorderTraversal(level + 1, root.right, levelSums);
+        preorderTraversal(level + 1, root.left, levelSums);
+        preorderTraversal(level + 1, root.right, levelSums);
     }
 }
