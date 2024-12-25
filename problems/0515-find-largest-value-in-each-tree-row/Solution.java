@@ -15,25 +15,25 @@
  */
 class Solution {
     public List<Integer> largestValues(TreeNode root) {
-        List<Integer> res = new ArrayList<>();
+        List<Integer> result = new ArrayList<>();
 
-        dfs(0, root, res);
+        dfs(0, root, result);
 
-        return res;
+        return result;
     }
 
-    private void dfs(int depth, TreeNode node, List<Integer> res) {
+    void dfs(int row, TreeNode node, List<Integer> result) {
         if (node == null) {
             return;
         }
 
-        if (res.size() == depth) {
-            res.add(node.val);
-        } else {
-            res.set(depth, Math.max(res.get(depth), node.val));
+        if (result.size() == row) {
+            result.add(node.val);
+        } else if (node.val > result.get(row)) {
+            result.set(row, node.val);
         }
 
-        dfs(depth + 1, node.left, res);
-        dfs(depth + 1, node.right, res);
+        dfs(row + 1, node.left, result);
+        dfs(row + 1, node.right, result);
     }
 }
