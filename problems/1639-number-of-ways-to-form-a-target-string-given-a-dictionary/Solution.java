@@ -6,35 +6,22 @@ class Solution {
         int m = words[0].length();
 
         int[][] charCount = new int[m][26];
+
         for (String word : words) {
             for (int i = 0; i < m; i++) {
                 charCount[i][word.charAt(i) - 'a']++;
             }
         }
 
-        int[][] memo = new int[n][m];
-        for (int[] arr : memo) {
-            Arrays.fill(arr, -1);
-        }
-        return recur(n - 1, m - 1, charCount, target, memo);
-    }
+        long[][] dp = new long[n + 1][m + 1];
+        Arrays.fill(dp[0], 1L);
 
-    private int recur(int targetIdx, int wordIdx, int[][] charCount, String target, int[][] memo) {
-        if (targetIdx < 0) {
-            return 1;
+        for (int i = 0; i < n; i++) {
+            for (int j = i; j < m; j++) {
+                dp[i + 1][j + 1] = (dp[i + 1][j] + dp[i][j] * charCount[j][target.charAt(i) - 'a']) % MOD;
+            }
         }
-        if (targetIdx > wordIdx) {
-            return 0;
-        }
-        if (memo[targetIdx][wordIdx] != -1) {
-            return memo[targetIdx][wordIdx];
-        }
-        long res = recur(targetIdx, wordIdx - 1, charCount, target, memo);
-        long count = charCount[wordIdx][target.charAt(targetIdx) - 'a'];
-        if (count > 0) {
-            res += count * recur(targetIdx - 1, wordIdx - 1, charCount, target, memo);
-            res %= MOD;
-        }            
-        return memo[targetIdx][wordIdx] = (int) res;
+
+        return (int) dp[n][m];
     }
 }
