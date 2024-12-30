@@ -2,21 +2,34 @@ class Solution {
     private final int MOD = (int) 1e9 + 7;
 
     public int countGoodStrings(int low, int high, int zero, int one) {
-        int[] dp = new int[high + 1];
+        int[] dp = calculateDpTable(high, zero, one);
+
+        int result = 0;
+
+        for (int i = low; i <= high; i++) {
+            result = (result + dp[i]) % MOD;
+        }
+
+        return result;
+    }
+
+    private int[] calculateDpTable(int n, int zero, int one) {
+        int[] dp = new int[n + 1];
+
         dp[0] = 1;
 
-        int res = 0;
-        for (int i = 1; i <= high; i++) {
+        for (int i = 1; i <= n; i++) {
             if (i - zero >= 0) {
-                dp[i] = (dp[i] + dp[i - zero]) % MOD;
+                dp[i] += dp[i - zero];
             }
+
             if (i - one >= 0) {
-                dp[i] = (dp[i] + dp[i - one]) % MOD;
+                dp[i] += dp[i - one];
             }
-            if (i >= low) {
-                res = (res + dp[i]) % MOD;
-            }
+
+            dp[i] %= MOD;
         }
-        return res;
+
+        return dp;
     }
 }
