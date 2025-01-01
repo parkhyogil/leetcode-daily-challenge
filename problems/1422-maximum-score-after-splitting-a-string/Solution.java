@@ -2,24 +2,27 @@ class Solution {
     public int maxScore(String s) {
         int n = s.length();
 
-        int one = 0;
         int zero = 0;
-        int max = Integer.MIN_VALUE;
+        int one = 0;
+
+        for (char c : s.toCharArray()) {
+            if (c == '1') {
+                one++;
+            }
+        }
+
+        int score = 0;
 
         for (int i = 0; i < n - 1; i++) {
-            if (s.charAt(i) == '1') {
-                one++;
-            } else {
+            if (s.charAt(i) == '0') {
                 zero++;
+            } else {
+                one--;
             }
 
-            max = Math.max(max, zero - one);
+            score = Math.max(score, zero + one);
         }
 
-        if (s.charAt(n - 1) == '1') {
-            one++;
-        }
-
-        return max + one;
+        return score;
     }
 }
