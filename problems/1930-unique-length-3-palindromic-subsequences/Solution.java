@@ -2,31 +2,39 @@ class Solution {
     public int countPalindromicSubsequence(String s) {
         int n = s.length();
 
-        boolean[][] right = new boolean[n][26];
-        boolean[][][] visit = new boolean[26][26][26];
+        int[] firstIndex = new int[26];
+        int[] lastIndex = new int[26];
 
-        right[n - 1][s.charAt(n - 1) - 'a'] = true;
-        for (int i = n - 2; i >= 0; i--) {
-            for (int j = 0; j < 26; j++) {
-                right[i][j] = right[i + 1][j];
-            }
-            right[i][s.charAt(i) - 'a'] = true;
+        Arrays.fill(firstIndex, -1);
+
+        for (int i = 0; i < n; i++) {
+            int c = s.charAt(i) - 'a';
+
+            if (firstIndex[c] == -1) {
+                firstIndex[c] = i;
+            }            
+            lastIndex[c] = i;
         }
 
-        int res = 0;
+        int result = 0;
 
-        boolean[] left = new boolean[26];
-        left[s.charAt(0) - 'a'] = true;
-        for (int i = 1; i < n - 1; i++) {
-            for (int j = 0; j < 26; j++) {
-                if (left[j] && right[i + 1][j] && !visit[j][s.charAt(i) - 'a'][j]) {
-                    res++;
-                    visit[j][s.charAt(i) - 'a'][j] = true;
+        for (int i = 0; i < 26; i++) {
+            if (firstIndex[i] == -1) {
+                continue;
+            }
+            
+            boolean[] visited = new boolean[26];
+
+            for (int j = firstIndex[i] + 1; j < lastIndex[i]; j++) {
+                int c = s.charAt(j) - 'a';
+
+                if (!visited[c]) {
+                    visited[c] = true;
+                    result++;
                 }
             }
-
-            left[s.charAt(i) - 'a'] = true;
         }
-        return res;
+
+        return result;
     }
 }
