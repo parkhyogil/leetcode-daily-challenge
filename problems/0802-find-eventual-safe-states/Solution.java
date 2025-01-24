@@ -2,29 +2,37 @@ class Solution {
     public List<Integer> eventualSafeNodes(int[][] graph) {
         int n = graph.length;
 
-        List<Integer> res = new ArrayList<>();
-        boolean[] visit = new boolean[n];
-        boolean[] safe = new boolean[n];
+        List<Integer> result = new ArrayList<>();
+
+        int[] isChecked = new int[n];
 
         for (int i = 0; i < n; i++) {
-            if (recur(i, graph, visit, safe)) {
-                res.add(i);
+            if (isSafeNode(i, graph, isChecked)) {
+                result.add(i);
             }
         }
-        return res;
+
+        return result;
     }
 
-    private boolean recur(int node, int[][] graph, boolean[] visit, boolean[] safe) {
-        if (visit[node]) {
-            return safe[node];
+    boolean isSafeNode(int node, int[][] graph, int[] isChecked) {
+        if (graph[node].length == 0) {
+            return true;
         }
 
-        visit[node] = true;
-        for (int next : graph[node]) {
-            if (!recur(next, graph, visit, safe)) {
+        if (isChecked[node] != 0) {
+            return isChecked[node] == 1;
+        }
+
+        isChecked[node] = -1;
+        
+        for (int adjacentNode : graph[node]) {
+            if (!isSafeNode(adjacentNode, graph, isChecked)) {
                 return false;
             }
         }
-        return safe[node] = true;
+
+        isChecked[node] = 1;
+        return true;
     }
 }
