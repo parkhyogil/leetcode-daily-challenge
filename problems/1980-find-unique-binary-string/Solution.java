@@ -1,26 +1,30 @@
 class Solution {
     public String findDifferentBinaryString(String[] nums) {
-        return recur(0, new char[nums.length], nums);
+        int n = nums.length;
+
+        Set<Integer> set = new HashSet<>();
+
+        for (String num : nums) {
+            set.add(Integer.parseInt(num, 2));
+        }
+
+        int result = 0;
+
+        while (set.contains(result)) {
+            result++;
+        }
+
+        return toBinaryString(result, n);
     }
 
-    private String recur(int idx, char[] chars, String[] nums) {
-        if (idx == chars.length) {
-            String s = String.valueOf(chars);
-            for (String t : nums) {
-                if (s.equals(t)) {
-                    return null;
-                }
-            }
-            return s;
+    String toBinaryString(int num, int length) {
+        char[] chars = new char[length];
+
+        for (int i = length - 1; i >= 0; i--) {
+            chars[i] = num % 2 == 0 ? '0' : '1';
+            num /= 2;
         }
 
-        chars[idx] = '0';
-        String res = recur(idx + 1, chars, nums);
-
-        if (res == null) {
-            chars[idx] = '1';
-            res = recur(idx + 1, chars, nums);
-        }
-        return res;
+        return String.valueOf(chars);
     }
 }
