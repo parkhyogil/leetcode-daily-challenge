@@ -1,15 +1,15 @@
 class Solution {
     public int subsetXORSum(int[] nums) {
-        return recur(0, 0, nums);
+        return combSum(0, 0, nums);
     }
 
-    private int recur(int idx, int xor, int[] nums) {
-        int res = xor;
+    private int combSum(int begin, int XORSum, int[] nums) {
+        int result = XORSum;
 
-        for (int i = idx; i < nums.length; i++) {
-            res += recur(i + 1, xor ^ nums[i], nums);
+        for (int i = begin; i < nums.length; i++) {
+            result += combSum(i + 1, XORSum ^ nums[i], nums);
         }
 
-        return res;
+        return result;
     }
 }
