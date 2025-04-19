@@ -4,23 +4,24 @@ class Solution {
 
         Arrays.sort(nums);
 
-        long result = 0L;
+        long result = 0;
 
         for (int i = 0; i < n; i++) {
             int right = binarySearch(upper - nums[i] + 1, nums);
-            int left = binarySearch(lower - nums[i], nums);
-            
-            result += right - left;
 
-            if (left <= i && i < right) {
-                result--;
+            if (right <= i) {
+                break;
             }
+
+            int left = binarySearch(lower - nums[i], nums);
+
+            result += right - Math.max(i + 1, left);
         }
 
-        return result / 2;
+        return result;
     }
 
-    int binarySearch(int target, int[] nums) {
+    private int binarySearch(int target, int[] nums) {
         int lo = 0;
         int hi = nums.length - 1;
 
