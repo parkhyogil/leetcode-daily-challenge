@@ -1,50 +1,54 @@
 class Solution {
-    public long countSubarrays(int[] nums, int minK, int maxK) {
-        int n = nums.length;
-
+    private long slidingWindow(int i, int j, int minK, int maxK, int[] nums) {
+        if (i == j) {
+            return 0;
+        }
+        
+        long result = 0;
         int minCount = 0;
         int maxCount = 0;
-        int leftCount = 0;
 
-        long res = 0;
-
-        for (int l = 0, r = 0; r < n; r++) {
-            if (nums[r] < minK || nums[r] > maxK) {
-                minCount = 0;
-                maxCount = 0;
-                leftCount = 0;
-                l = r + 1;
-                continue;
-            }
-
+        for (int l = i, r = i; r < j; r++) {
             if (nums[r] == minK) {
                 minCount++;
             } 
             if (nums[r] == maxK) {
                 maxCount++;
-            } 
+            }
 
-            if (minCount >= 1 && maxCount >= 1) {
-                while (true) {
-                    if (nums[l] == minK) {
-                        if (minCount == 1) {
-                            break;
-                        }
-                        minCount--;
-                    } else if (nums[l] == maxK) {
-                        if (maxCount == 1) {
-                            break;
-                        }
-                        maxCount--;
-                    } 
-                    leftCount++;
-                    l++;
+            while (minCount > 0 && maxCount > 0) {
+                result += j - r;
+
+                if (nums[l] == minK) {
+                    minCount--;
                 }
-                
-                res += leftCount + 1;
+                if (nums[l] == maxK) {
+                    maxCount--;
+                }
+                l++;
             }
         }
 
-        return res;
+        return result;
+    }
+
+    public long countSubarrays(int[] nums, int minK, int maxK) {
+        if (minK > maxK) {
+            return 0;
+        }
+
+        int n = nums.length;
+
+        long result = 0;
+        int prev = -1;
+
+        for (int i = 0; i < n; i++) {
+            if (nums[i] < minK || nums[i] > maxK) {
+                result += slidingWindow(prev + 1, i, minK, maxK, nums);
+                prev = i;
+            }
+        }
+
+        return result + slidingWindow(prev + 1, n, minK, maxK, nums);
     }
 }
