@@ -1,44 +1,49 @@
 class Solution {
     public int snakesAndLadders(int[][] board) {
         int n = board.length;
-        int target = n * n;
+        int dest = n * n - 1;
 
-        boolean[] visit = new boolean[target + 1];
+        int[] jump = new int[dest + 1];
+        for (int i = 0; i <= dest; i++) {
+            int r = i / n;
+            int c = i % n;
+            if (r % 2 == 1) {
+                c = n - 1 - c;
+            }
 
-        Queue<Integer> q = new LinkedList<>();
-        q.offer(1);
-        visit[1] = true;
+            jump[i] = board[n - 1 - r][c] - 1;
+        }
 
-        int numOfMoves = 0;
-        while (!q.isEmpty()) {
-            int size = q.size();
+        Queue<Integer> queue = new ArrayDeque<>();
+        boolean[] visited = new boolean[dest + 1];
+
+        queue.offer(0);
+        visited[0] = true;
+
+        int result = 0;
+
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+
             while (size-- > 0) {
-                int cur = q.poll();
+                int curr = queue.poll();
 
-                if (cur == target) {
-                    return numOfMoves;
+                if (curr == dest) {
+                    return result;
                 }
 
-                for (int i = 1; i <= 6 && cur + i <= target; i++) {
-                    int next = getNext(cur + i, board);
+                for (int i = curr + 1; i <= Math.min(curr + 6, dest); i++) {
+                    int next = jump[i] < 0 ? i : jump[i];
 
-                    if (!visit[next]) {
-                        q.offer(next);
-                        visit[next] = true;
+                    if (!visited[next]) {
+                        queue.offer(next);
+                        visited[next] = true;
                     }
                 }
             }
-            numOfMoves++;
+            result++;
         }
+
         return -1;
-    }
-
-    private int getNext(int cur, int[][] board) {
-        cur--;
-        int n = board.length;
-        int r = n - 1 - cur / n;
-        int c = cur / n % 2 == 0 ? cur % n : n - 1 - cur % n;
-
-        return board[r][c] == -1 ? cur + 1 : board[r][c];
     }
 }
