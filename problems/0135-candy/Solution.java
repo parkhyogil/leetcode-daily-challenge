@@ -3,34 +3,47 @@ class Solution {
         int n = ratings.length;
 
         int[] count = new int[n];
-        int res = 0;
-        for (int i = 0; i < n; i++) {
-            res += recur(i, ratings, count);
-        }
-        return res;
-    }
+        Arrays.fill(count, n);
 
-    private int recur(int i, int[] ratings, int[] count) {
-        if (count[i] != 0) {
-            return count[i];
+        Queue<Integer> queue = new ArrayDeque<>();
+
+        if (n > 1 && ratings[0] <= ratings[1]) {
+            queue.offer(0);
+            count[0] = 1;
         }
 
-        int rating = ratings[i];
-        int left = i - 1 < 0 ? Integer.MAX_VALUE : ratings[i - 1];
-        int right = i + 1 == ratings.length ? Integer.MAX_VALUE : ratings[i + 1];
-
-        if (left < rating && rating > right) {
-            return count[i] = Math.max(recur(i - 1, ratings, count), recur(i + 1, ratings, count)) + 1;
+        if (n > 1 && ratings[n - 1] <= ratings[n - 2]) {
+            queue.offer(n - 1);
+            count[n - 1] = 1;
         }
 
-        if (left < rating) {
-            return count[i] = recur(i - 1, ratings, count) + 1;
-        }
-        
-        if (right < rating) {
-            return count[i] = recur(i + 1, ratings, count) + 1;
+        for (int i = 1; i < n - 1; i++) {
+            if (ratings[i - 1] >= ratings[i] && ratings[i] <= ratings[i + 1]) {
+                queue.offer(i);
+                count[i] = 1;
+            }
         }
 
-        return count[i] = 1;
+        while (!queue.isEmpty()) {
+            int i = queue.poll();
+
+            if (i - 1 >= 0 && ratings[i] < ratings[i - 1]) {
+                queue.offer(i - 1);
+                count[i - 1] = count[i] + 1;
+            }
+
+            if (i + 1 < n && ratings[i] < ratings[i + 1]) {
+                queue.offer(i + 1);
+                count[i + 1] = count[i] + 1;
+            }
+        }
+
+        int sum = 0;
+
+        for (int c : count) {
+            sum += c;
+        }
+
+        return sum;
     }
 }
