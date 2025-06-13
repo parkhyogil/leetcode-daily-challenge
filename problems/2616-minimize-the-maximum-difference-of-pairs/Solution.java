@@ -1,5 +1,9 @@
 class Solution {
     public int minimizeMax(int[] nums, int p) {
+        if (p == 0) {
+            return 0;
+        }
+
         Arrays.sort(nums);
 
         int n = nums.length;
@@ -8,25 +12,28 @@ class Solution {
         int hi = nums[n - 1] - nums[0];
 
         while (lo <= hi) {
-            int mid = lo + (hi - lo) / 2;
+            int mid = (lo + hi) / 2;
 
-            if (countPair(nums, mid) >= p) {
+            if (count(nums, mid) >= p) {
                 hi = mid - 1;
             } else {
                 lo = mid + 1;
             }
         }
+
         return lo;
     }
 
-    private int countPair(int[] nums, int max) {
-        int count = 0;
+    private int count(int[] nums, int diff) {
+        int result = 0;
+
         for (int i = 0; i < nums.length - 1; i++) {
-            if (nums[i + 1] - nums[i] <= max) {
-                count++;
+            if (nums[i + 1] - nums[i] <= diff) {
+                result++;
                 i++;
             }
         }
-        return count;
+
+        return result;
     }
 }
