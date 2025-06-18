@@ -1,19 +1,25 @@
 class Solution {
     public int[][] divideArray(int[] nums, int k) {
-        Arrays.sort(nums);
-
         int n = nums.length;
 
-        int[][] res = new int[n / 3][3];
+        Arrays.sort(nums);
 
-        for (int i = 0; i < n; i++) {
-            if (i % 3 == 2 && nums[i] - nums[i - 2] > k) {
+        int[][] result = new int[n / 3][3];
+
+        for (int i = 0, j = 0, l = 0; i < n / 3; i++) {
+            while (l < n && nums[l] <= nums[j] + k) {
+                l++;
+            }
+
+            if (l - j < 3) {
                 return new int[0][];
             }
 
-            res[i / 3][i % 3] = nums[i];
+            result[i][0] = nums[j++];
+            result[i][1] = nums[j++];
+            result[i][2] = nums[j++];
         }
 
-        return res;
+        return result;
     }
 }
