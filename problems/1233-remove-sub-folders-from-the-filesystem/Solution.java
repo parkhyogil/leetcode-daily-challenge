@@ -1,64 +1,69 @@
 class Solution {
-    class TrieNode {
-        TrieNode[] children;
+    class Folder {
+        String name;
         boolean isEnd;
+        Map<String, Folder> subFolders;
 
-        TrieNode() {
-            children = new TrieNode[27];
-            isEnd = false;
+        Folder(String name) {
+            this.name = name;
+            subFolders = new HashMap<>();
         }
     }
 
-    TrieNode root;
     public List<String> removeSubfolders(String[] folder) {
-        root = new TrieNode();
+        Folder root = new Folder("/");
 
-        for (String path : folder) {
-            insert(path);
+        for (String s : folder) {
+            Folder f = root;
+            int j = 1;
+
+            for (int i = 2; i <= s.length() && !f.isEnd; i++) {
+                if (i == s.length() || s.charAt(i) == '/') {
+                    String subName = s.substring(j, i);
+
+                    f = f.subFolders.computeIfAbsent(subName, k -> new Folder(subName));
+
+                    j = i + 1;
+                }
+            }
+
+            f.isEnd = true;
         }
 
         List<String> result = new ArrayList<>();
 
-        for (String path : folder) {
-            if (!isSubfolder(path)) {
-                result.add(path);
-            }
+        for (Folder sub : root.subFolders.values()) {
+            result.addAll(printSubFolders(sub));
         }
 
         return result;
     }
 
-    boolean isSubfolder(String path) {
-        TrieNode node = root;
+    List<String> printSubFolders(Folder folder) {
+        List<String> result = new ArrayList<>();
 
-        for (int i = 0; i < path.length(); i++) {
-            char c = path.charAt(i);
-            int idx = c == '/' ? 26 : c - 'a';
+        char[] chars = new char[101];
+        chars[0] = '/';
 
-            node = node.children[idx];
+        dfs(1, folder, chars, result);
 
-            if (node.isEnd && i + 1 < path.length() && path.charAt(i + 1) == '/') {
-                return true;
-            }
-        }
-
-        return false;
+        return result;
     }
 
-    void insert(String path) {
-        TrieNode node = root;
-
-        for (int i = 0; i < path.length(); i++) {
-            char c = path.charAt(i);
-            int idx = c == '/' ? 26 : c - 'a';
-
-            if (node.children[idx] == null) {
-                node.children[idx] = new TrieNode();
-            }
-
-            node = node.children[idx];
+    void dfs(int i, Folder folder, char[] chars, List<String> result) {
+        for (char c : folder.name.toCharArray()) {
+            chars[i++] = c;
         }
 
-        node.isEnd = true;
+        if (folder.isEnd) {
+            result.add(String.valueOf(chars, 0, i));
+            return;
+        }
+
+        chars[i++] = '/';
+
+        for (Folder sub : folder.subFolders.values()) {
+            dfs(i, sub, chars, result);
+        }
     }
 }
