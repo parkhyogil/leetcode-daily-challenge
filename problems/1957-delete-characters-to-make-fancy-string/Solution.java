@@ -2,11 +2,20 @@ class Solution {
     public String makeFancyString(String s) {
         StringBuilder sb = new StringBuilder();
 
+        char prev = '*';
+        int count = 0;
         for (char c : s.toCharArray()) {
-            if (sb.length() < 2 || c != sb.charAt(sb.length() - 1) || c != sb.charAt(sb.length() - 2)) {
+            if (c != prev) {
+                prev = c;
+                count = 0;
+            }
+
+            count++;
+
+            if (count < 3) {
                 sb.append(c);
             }
-        }   
+        }
 
         return sb.toString();
     }
