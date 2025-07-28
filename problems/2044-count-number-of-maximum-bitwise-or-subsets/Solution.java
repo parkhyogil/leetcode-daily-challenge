@@ -1,25 +1,20 @@
 class Solution {
     public int countMaxOrSubsets(int[] nums) {
-        int maxOrValue = 0;
+        int target = 0;
 
         for (int num : nums) {
-            maxOrValue |= num;
+            target |= num;
         }
 
-        return combination(0, 0, maxOrValue, nums);
+        return recur(0, 0, target, nums);
     }
 
-    private int combination(int idx, int value, int maxOrValue, int[] nums) {
-        if (value == maxOrValue) {
-            return 1 << (nums.length - idx);
+    int recur(int i, int val, int target, int[] nums) {
+        if (i == nums.length) {
+            return val == target ? 1 : 0;
         }
 
-        int result = 0;
-
-        for (int i = idx; i < nums.length; i++) {
-            result += combination(i + 1, value | nums[i], maxOrValue, nums);
-        }
-
-        return result;
+        return recur(i + 1, val | nums[i], target, nums) + recur(i + 1, val, target, nums);
     }
 }
+
