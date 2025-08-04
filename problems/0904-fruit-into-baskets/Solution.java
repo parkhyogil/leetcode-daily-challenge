@@ -1,28 +1,37 @@
 class Solution {
     public int totalFruit(int[] fruits) {
         int n = fruits.length;
-        int[] count = new int[n];
-        int basket = 0;
 
-        int res = 0;
-        for (int left = 0, right = 0; right < n; right++) {
-            int fruit = fruits[right];
-            if (count[fruit] == 0) {
-                basket++;
+        int[] freq = new int[n];
+        int distinctFruits = 0;
+        int total = 0;
+
+        int result = 0;
+
+        for (int l = 0, r = 0; r < n; r++) {
+            int fruit = fruits[r];
+
+            if (freq[fruit] == 0) {
+                distinctFruits++;
             }
-            count[fruit]++;
 
-            while (basket > 2) {
-                fruit = fruits[left];
-                count[fruit]--;
-                if (count[fruit] == 0) {
-                    basket--;
+            freq[fruit]++;
+            total++;
+
+            while (distinctFruits > 2) {
+                fruit = fruits[l++];
+
+                total--;
+                freq[fruit]--;
+
+                if (freq[fruit] == 0) {
+                    distinctFruits--;
                 }
-                left++;
             }
 
-            res = Math.max(res, right - left + 1);
+            result = Math.max(result, total);
         }
-        return res;
+
+        return result;
     }
 }
