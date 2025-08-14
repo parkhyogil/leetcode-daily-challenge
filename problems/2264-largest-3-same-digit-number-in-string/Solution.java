@@ -2,18 +2,14 @@ class Solution {
     public String largestGoodInteger(String num) {
         int n = num.length();
 
-        String res = "";
+        int idx = -1;
 
-        for (int l = 0, r = 0; r < n; r++) {
-            while (num.charAt(l) != num.charAt(r)) {
-                l++;
-            }
-
-            if ((r - l + 1 == 3) && (res.isEmpty() || res.charAt(0) < num.charAt(l))) {
-                res = num.substring(l, r + 1);
+        for (int i = 0; i < n - 2; i++) {
+            if (num.charAt(i) == num.charAt(i + 1) && num.charAt(i) == num.charAt(i + 2) && (idx == -1 || num.charAt(idx) < num.charAt(i))) {
+                idx = i;
             }
         }
 
-        return res;
+        return idx < 0 ? "" : num.substring(idx, idx + 3);
     }
 }
