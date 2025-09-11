@@ -1,57 +1,34 @@
 class Solution {
-    private final char[] vowels = {'A', 'E', 'I', 'O', 'U', 'a', 'e', 'i', 'o', 'u'};
-
     public String sortVowels(String s) {
         int n = s.length();
 
-        char[] res = s.toCharArray();
-        int[] vowelCount = countVowels(s);
+        char[] chars = new char[n];
+        int[] freq = new int[128];
 
-        int idx = 0;
         for (int i = 0; i < n; i++) {
             char c = s.charAt(i);
 
-            if (isVowel(c)) {
-                while (vowelCount[idx] == 0) {
-                    idx++;
-                }
-
-                res[i] = vowels[idx];
-                vowelCount[idx]--;
+            if (c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U' || c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') {
+                freq[c]++;
+                chars[i] = '*';
+            } else {
+                chars[i] = c;
             }
         }
 
-        return String.valueOf(res);
-    }
-
-    private int[] countVowels(String s) {
-        int[] res = new int[10];
-
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-
-            if (isVowel(c)) {
-                res[getIdx(c)]++;
+        for (int i = 0, j = 0; i < n; i++) {
+            if (chars[i] != '*') {
+                continue;
             }
-        }
-        return res;
-    }
 
-    private int getIdx(char c) {
-        for (int i = 0; i < 10; i++) {
-            if (vowels[i] == c) {
-                return i;
+            while (freq[j] == 0) {
+                j++;
             }
-        }
-        return -1;
-    }
 
-    private boolean isVowel(char c) {
-        for (char vowel : vowels) {
-            if (vowel == c) {
-                return true;
-            }
+            chars[i] = (char) j;
+            freq[j]--;
         }
-        return false;
+
+        return String.valueOf(chars);
     }
 }
