@@ -1,37 +1,44 @@
 class FoodRatings {
-    private Map<String, TreeSet<String>> groupByCuisine;
-    private Map<String, Integer> ratingOf;
-    private Map<String, String> cuisineOf;
+    Map<String, Integer> foodRating;
+    Map<String, String> foodCuisine;
+    Map<String, PriorityQueue<Pair<String, Integer>>> queues;
 
     public FoodRatings(String[] foods, String[] cuisines, int[] ratings) {
-        groupByCuisine = new HashMap<>();
-        ratingOf = new HashMap<>();
-        cuisineOf = new HashMap<>();
+        foodRating = new HashMap<>();
+        foodCuisine = new HashMap<>();
+        queues = new HashMap<>();
 
-        int n = foods.length;
+        for (int i = 0; i < foods.length; i++) {
+            foodRating.put(foods[i], ratings[i]);
+            foodCuisine.put(foods[i], cuisines[i]);
 
-        for (int i = 0; i < n; i++) {
-            ratingOf.put(foods[i], ratings[i]);
-            cuisineOf.put(foods[i], cuisines[i]);
-
-            groupByCuisine.computeIfAbsent(cuisines[i], key -> new TreeSet<>((a, b) -> {
-                int compare = ratingOf.get(b) - ratingOf.get(a);
-                if (compare == 0) {
-                    return a.compareTo(b);
-                }
-                return compare;
-            })).add(foods[i]);
-        }    
+            queues.computeIfAbsent(cuisines[i], k -> new PriorityQueue<>((a, b) -> a.getValue() - b.getValue() == 0 ? a.getKey().compareTo(b.getKey()) : b.getValue() - a.getValue())).offer(new Pair<>(foods[i], ratings[i]));
+        }
     }
     
     public void changeRating(String food, int newRating) {
-        groupByCuisine.get(cuisineOf.get(food)).remove(food);
-        ratingOf.put(food, newRating);
-        groupByCuisine.get(cuisineOf.get(food)).add(food);
+        if (foodRating.get(food) == newRating) {
+            return;
+        }
+
+        foodRating.put(food, newRating);
+        queues.get(foodCuisine.get(food)).offer(new Pair<>(food, newRating));
     }
     
     public String highestRated(String cuisine) {
-        return groupByCuisine.get(cuisine).first();
+        PriorityQueue<Pair<String, Integer>> queue = queues.get(cuisine);
+    
+        while (!queue.isEmpty()) {
+            Pair<String, Integer> top = queue.peek();
+
+            if (top.getValue().equals(foodRating.get(top.getKey()))) {
+                return top.getKey();
+            }
+
+            queue.poll();
+        }
+
+        return "";
     }
 }
 
