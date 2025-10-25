@@ -1,14 +1,12 @@
 class Solution {
     public int totalMoney(int n) {
-        int weeks = n / 7;
-        int restDays = n % 7;
+        int x = n / 7;
+        int y = n % 7;
 
-        int begin = weeks * (weeks + 1) / 2;
+        return sum(28, x, 7) + sum(x + 1, y, 1);
+    }
 
-        int res = 7 * (2 * begin + 6 * weeks) / 2;
-
-        res += restDays * (2 * (weeks + 1) + (restDays - 1) * 1) / 2;
-
-        return res;
+    int sum(int a, int n, int d) {
+        return n * (2 * a + (n - 1) * d) / 2;
     }
 }
