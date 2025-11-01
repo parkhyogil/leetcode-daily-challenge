@@ -16,21 +16,16 @@ class Solution {
             set.add(num);
         }
 
-        ListNode result = new ListNode(0, head);
+        ListNode dummy = new ListNode(-1, head);
+        ListNode node = dummy;
 
-        ListNode prev = result;
-
-        while (head != null) {
-            if (set.contains(head.val)) {
-                prev.next = head.next;
-                head.next = null;
-                head = prev.next;
-            } else {
-                prev = head;
-                head = head.next;
+        while (node != null) {
+            while (node.next != null && set.contains(node.next.val)) {
+                node.next = node.next.next;
             }
+            node = node.next;
         }
 
-        return result.next;
+        return dummy.next;
     }
 }
