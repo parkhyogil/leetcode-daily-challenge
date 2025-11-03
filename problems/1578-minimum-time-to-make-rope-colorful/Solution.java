@@ -2,23 +2,23 @@ class Solution {
     public int minCost(String colors, int[] neededTime) {
         int n = colors.length();
 
-        int sum = 0;
-        int max = 0;
+        int result = 0;
 
-        int res = 0;
-        for (int l = 0, r = 0; r < n; r++) {
-            sum += neededTime[r];
-            max = Math.max(max, neededTime[r]);
+        for (int i = 0; i < n; i++) {
+            int j = i;
 
-            if (r + 1 == n || colors.charAt(l) != colors.charAt(r + 1)) {
-                res += sum - max;
+            int sum = 0, max = 0;
 
-                sum = 0;
-                max = 0;
-                l = r + 1;
+            while (j < n && colors.charAt(i) == colors.charAt(j)) {
+                sum += neededTime[j];
+                max = Math.max(max, neededTime[j]);
+                j++;
             }
+
+            i = j - 1;
+            result += sum - max;
         }
 
-        return res;
+        return result;
     }
 }
