@@ -2,37 +2,32 @@ class Solution {
     public int countPalindromicSubsequence(String s) {
         int n = s.length();
 
-        int[] firstIndex = new int[26];
-        int[] lastIndex = new int[26];
-
-        Arrays.fill(firstIndex, -1);
-
-        for (int i = 0; i < n; i++) {
-            int c = s.charAt(i) - 'a';
-
-            if (firstIndex[c] == -1) {
-                firstIndex[c] = i;
-            }            
-            lastIndex[c] = i;
+        int[] suffix = new int[n];
+        for (int i = n - 1; i > 0; i--) {
+            int d = s.charAt(i) - 'a';
+            suffix[i - 1] = suffix[i] | (1 << d);
         }
 
+        boolean[] set = new boolean[26 * 26];
+        int prefix = 0;
         int result = 0;
 
-        for (int i = 0; i < 26; i++) {
-            if (firstIndex[i] == -1) {
-                continue;
-            }
-            
-            boolean[] visited = new boolean[26];
+        for (int i = 0; i < n; i++) {
+            int d = s.charAt(i) - 'a';
 
-            for (int j = firstIndex[i] + 1; j < lastIndex[i]; j++) {
-                int c = s.charAt(j) - 'a';
+            for (int j = 0; j < 26; j++) {
+                if ((prefix & (1 << j)) == 0 || (suffix[i] & (1 << j)) == 0) {
+                    continue;
+                }
 
-                if (!visited[c]) {
-                    visited[c] = true;
+                int subseq = d * 26 + j;
+                if (!set[subseq]) {
+                    set[subseq] = true;
                     result++;
                 }
             }
+
+            prefix |= 1 << d;
         }
 
         return result;
