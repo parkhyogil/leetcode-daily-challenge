@@ -1,44 +1,32 @@
 class Solution {
     public int minSubarray(int[] nums, int p) {
-        if (p == 1) {
-            return 0;
-        }
-
         int n = nums.length;
 
-        int[] prefixSumRemainders = calculatePrefixSumRemainders(n, nums, p);
+        int rem = 0;
 
-        int totalSumRemainder = prefixSumRemainders[n - 1];
+        for (int num : nums) {
+            rem = (rem + num) % p;
+        }
 
-        if (totalSumRemainder == 0) {
+        if (rem == 0) {
             return 0;
         }
 
-        Map<Integer, Integer> remainderIndexMap = new HashMap<>();
-        remainderIndexMap.put(0, -1);
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(0, -1);
 
-        int lengthMinSubarray = n;
+        int result = n;
+
+        int sum = 0;
         for (int i = 0; i < n; i++) {
-            int targetRemainder = (prefixSumRemainders[i] - totalSumRemainder + p) % p;
+            sum = (sum + nums[i]) % p;
 
-            if (remainderIndexMap.containsKey(targetRemainder)) {
-                lengthMinSubarray = Math.min(lengthMinSubarray, i - remainderIndexMap.get(targetRemainder));
+            if (map.containsKey((sum - rem + p) % p)) {
+                result = Math.min(result, i - map.get((sum - rem + p) % p));
             }
-
-            remainderIndexMap.put(prefixSumRemainders[i], i);
+            map.put(sum, i);
         }
 
-        return lengthMinSubarray == n ? -1 : lengthMinSubarray;
-    }
-
-    private int[] calculatePrefixSumRemainders(int n, int[] nums, int p) {
-        int[] prefixSumRemainders = new int[n];
-        prefixSumRemainders[0] = nums[0] % p;
-
-        for (int i = 1; i < n; i++) {
-            prefixSumRemainders[i] = (prefixSumRemainders[i - 1] + nums[i]) % p;
-        }
-
-        return prefixSumRemainders;
+        return result == n ? -1 : result;
     }
 }
