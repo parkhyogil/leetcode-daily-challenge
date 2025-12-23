@@ -1,22 +1,26 @@
 class Solution {
     public int maxTwoEvents(int[][] events) {
-        Arrays.sort(events, (a, b) -> Integer.compare(a[1], b[1]));
+        int n = events.length;
 
-        PriorityQueue<int[]> priorityQueue = new PriorityQueue<>((a, b) -> Integer.compare(b[2], a[2]));
-        priorityQueue.addAll(Arrays.asList(events));
-        priorityQueue.offer(new int[]{Integer.MAX_VALUE - 1, Integer.MAX_VALUE, 0});
+        Arrays.sort(events, (a, b) -> a[1] - b[1]);
+
+        List<int[]> list = new ArrayList<>();
+
+        for (int i = 0; i < n; i++) {
+            list.add(new int[] {events[i][1], events[i][2]});
+        }
+
+        Arrays.sort(events, (a, b) -> a[0] - b[0]);
 
         int result = 0;
+        int max = 0;
 
-        for (int[] event : events) {
-            int end = event[1];
-            int value = event[2];
-
-            while (!priorityQueue.isEmpty() && priorityQueue.peek()[0] <= end) {
-                priorityQueue.poll();
+        for (int i = 0, j = 0; i < n; i++) {
+            while (list.get(j)[0] < events[i][0]) {
+                max = Math.max(max, list.get(j++)[1]);
             }
 
-            result = Math.max(result, value + priorityQueue.peek()[2]);
+            result = Math.max(result, max + events[i][2]);
         }
 
         return result;
