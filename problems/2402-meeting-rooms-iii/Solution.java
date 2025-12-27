@@ -1,44 +1,38 @@
 class Solution {
     public int mostBooked(int n, int[][] meetings) {
-        PriorityQueue<Integer> rooms = new PriorityQueue<>();
-        PriorityQueue<int[]> bookedRooms = new PriorityQueue<>((a, b) -> a[1] == b[1] ? a[0] - b[0] : a[1] - b[1]);
-
-        for (int i = 0; i < n; i++) {
-            rooms.offer(i);
-        }
-
-        int[] numBooked = new int[n];
-
         Arrays.sort(meetings, (a, b) -> a[0] - b[0]);
 
-        for (int[] meeting : meetings) {
-            int start = meeting[0];
-            int end = meeting[1];
+        PriorityQueue<int[]> freeRoomQueue = new PriorityQueue<>((a, b) -> a[0] - b[0]);
+        PriorityQueue<int[]> allocatedRoomQueue = new PriorityQueue<>((a, b) -> a[1] == b[1] ? a[0] - b[0] : a[1] - b[1]);
 
-            while (!bookedRooms.isEmpty() && bookedRooms.peek()[1] <= start) {
-                rooms.offer(bookedRooms.poll()[0]);
+        for (int i = 0; i < n; i++) {
+            freeRoomQueue.offer(new int[] {i, 0});
+        }
+
+        int[] count = new int[n];
+
+        for (int[] m : meetings) {
+            int s = m[0], d = m[1] - m[0];
+
+            while (!allocatedRoomQueue.isEmpty() && s >= allocatedRoomQueue.peek()[1]) {
+                freeRoomQueue.offer(allocatedRoomQueue.poll());
             }
 
-            int room;
-            int endTime;
-            if (rooms.isEmpty()) {
-                int[] lastBook = bookedRooms.poll();
-
-                room = lastBook[0];
-                endTime = lastBook[1] + end - start;
-            } else {
-                room = rooms.poll();
-                endTime = end;
+            if (freeRoomQueue.isEmpty()) {
+                freeRoomQueue.offer(allocatedRoomQueue.poll());
             }
 
-            numBooked[room]++;
-            bookedRooms.offer(new int[] {room, endTime});
+            int[] room = freeRoomQueue.poll();
+            count[room[0]]++;
+            room[1] = Math.max(s, room[1]) + d;
+
+            allocatedRoomQueue.offer(room);
         }
 
         int result = 0;
 
         for (int i = 0; i < n; i++) {
-            if (numBooked[i] > numBooked[result]) {
+            if (count[i] > count[result]) {
                 result = i;
             }
         }
