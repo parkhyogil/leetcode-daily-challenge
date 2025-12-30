@@ -1,13 +1,12 @@
 class Solution {
     public int numMagicSquaresInside(int[][] grid) {
-        int row = grid.length;
-        int col = grid[0].length;
+        int m = grid.length, n = grid[0].length;
 
         int result = 0;
 
-        for (int r = 0; r < row - 2; r++) {
-            for (int c = 0; c < col - 2; c++) {
-                if (isMagicSquare(r, c, grid)) {
+        for (int i = 0; i < m - 2; i++) {
+            for (int j = 0; j < n - 2; j++) {
+                if (isMagicSquare(i, j, grid)) {
                     result++;
                 }
             }
@@ -16,58 +15,34 @@ class Solution {
         return result;
     }
 
-    private boolean isMagicSquare(int row, int col, int[][] grid) {
-        if (isWrongNumberInSquare(row, col, grid)) {
+    boolean isMagicSquare(int r, int c, int[][] grid) {
+        if (grid[r + 1][c + 1] != 5) {
             return false;
         }
 
-        int targetSum = grid[row][col] + grid[row][col + 1] + grid[row][col + 2];
+        int mask = 0;
 
-        for (int r = row; r <= row + 2; r++) {
-            int sum = 0;
-            for (int c = col; c <= col + 2; c++) {
-                sum += grid[r][c];
-            }
+        for (int i = 0; i < 3; i++) {
+            int hSum = 0;
+            int vSum = 0;
 
-            if (sum != targetSum) {
-                return false;
-            }
-        }
+            for (int j = 0; j < 3; j++) {
+                int val = grid[r + i][c + j];
 
-        for (int c = col; c <= col + 2; c++) {
-            int sum = 0;
-            for (int r = row; r <= row + 2; r++) {
-                sum += grid[r][c];
-            }
-
-            if (sum != targetSum) {
-                return false;
-            }
-        }
-
-        if (grid[row][col] + grid[row + 1][col + 1] + grid[row + 2][col + 2] != targetSum) {
-            return false;
-        }
-
-        if (grid[row][col + 2] + grid[row + 1][col + 1] + grid[row + 2][col] != targetSum) {
-            return false;
-        }
-        
-        return true;
-    }
-
-    private boolean isWrongNumberInSquare(int row, int col, int[][] grid) {
-        boolean[] contains = new boolean[10];
-
-        for (int r = row; r <= row + 2; r++) {
-            for (int c = col; c <= col + 2; c++) {
-                if (grid[r][c] < 1 || grid[r][c] > 9 || contains[grid[r][c]]) {
-                    return true;
+                if (val == 0 || val > 9 || (mask & (1 << val)) > 0) {
+                    return false;
                 }
-                contains[grid[r][c]] = true;
+
+                mask |= 1 << val;
+                hSum += val;
+                vSum += grid[r + j][c + i];
+            }
+
+            if (hSum != 15 || vSum != 15) {
+                return false;
             }
         }
 
-        return false;
+        return true;
     }
 }
