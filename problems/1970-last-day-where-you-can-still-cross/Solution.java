@@ -1,72 +1,68 @@
 class Solution {
-    class DisjointSet {
-        private int[] root;
-
-        public DisjointSet(int size) {
-            root = new int[size];
-            for (int i = 0; i < size; i++) {
-                root[i] = i;
-            }
-        }
-
-        public void union(int a, int b) {
-            a = getRoot(a);
-            b = getRoot(b);
-
-            if (a < b) {
-                root[b] = a;
-            } else {
-                root[a] = b;
-            }
-        }
-
-        public int getRoot(int child) {
-            if (root[child] == child) {
-                return child;
-            }
-            return root[child] = getRoot(root[child]);
-        }
-    }
     public int latestDayToCross(int row, int col, int[][] cells) {
-        int[][] dir = {
+        int n = cells.length;
+
+        int[][] dir = new int[][] {
             {-1, -1}, {-1, 0}, {-1, 1},
             {0, -1}, {0, 1},
             {1, -1}, {1, 0}, {1, 1}
         };
 
         int[][] grid = new int[row][col];
+        int[] roots = new int[n + 2];
 
-        DisjointSet ds = new DisjointSet(row * col + 2);
-        int top = 0;
-        int bottom = row * col + 1;
+        for (int i = 0; i < n + 2; i++) {
+            roots[i] = i;
+        }
 
-        for (int i = 0; i < cells.length; i++) {
+        for (int i = 0; i < n; i++) {
             int r = cells[i][0] - 1;
             int c = cells[i][1] - 1;
-            int idx = r * col + c + 1;
+
+            int j = r * col + c;
 
             grid[r][c] = 1;
+
             for (int[] d : dir) {
                 int nr = r + d[0];
                 int nc = c + d[1];
 
-                if (nr < 0 || nr >= row || nc < 0 || nc >= col || grid[nr][nc] == 0) {
+                if (nr < 0 || nr == row) {
                     continue;
                 }
 
-                ds.union(idx, nr * col + nc + 1);
+                if (nc < 0) {
+                    union(j, n, roots);
+                } else if (nc == col) {
+                    union(j, n + 1, roots);
+                } else if (grid[nr][nc] == 1) {
+                    union(j, nr * col + nc, roots);
+                }
             }
 
-            if (c == 0) {
-                ds.union(idx, top);
-            } else if (c == col - 1) {
-                ds.union(idx, bottom);
-            }
-
-            if (ds.getRoot(top) == ds.getRoot(bottom)) {
+            if (findRoot(n, roots) == findRoot(n + 1, roots)) {
                 return i;
             }
         }
+
         return -1;
+    }
+
+    void union(int a, int b, int[] roots) {
+        a = findRoot(a, roots);
+        b = findRoot(b, roots);
+
+        if (a < b) {
+            roots[b] = a;
+        } else {
+            roots[a] = b;
+        }
+    }
+
+    int findRoot(int x, int[] roots) {
+        if (x == roots[x]) {
+            return x;
+        }
+        return roots[x] = findRoot(roots[x], roots);
     }
 }
