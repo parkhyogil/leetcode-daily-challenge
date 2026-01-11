@@ -3,41 +3,35 @@ class Solution {
         int m = matrix.length;
         int n = matrix[0].length;
 
-        int[] height = new int[n];
+        int[][] count = new int[m][n];
 
-        int res = 0;
+        int result = 0;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (matrix[i][j] == '0') {
+                    continue;
+                }
 
-        for (char[] row : matrix) {
-            for (int c = 0; c < n; c++) {
-                if (row[c] == '0') {
-                    height[c] = 0;
-                } else {
-                    height[c]++;
+                count[i][j]++;
+
+                if (j > 0) {
+                    count[i][j] += count[i][j - 1];
+                }
+
+                int min = count[i][j];
+
+                for (int k = i; k >= 0; k--) {
+                    min = Math.min(min, count[k][j]);
+
+                    if (min == 0) {
+                        break;
+                    }
+                    
+                    result = Math.max(result, min * (i - k + 1));
                 }
             }
-
-            res = Math.max(res, getMaxArea(height));
         }
 
-        return res;
-    }
-
-    private int getMaxArea(int[] height) {
-        int n = height.length;
-
-        Stack<Integer> stack = new Stack<>();
-
-        int res = 0;
-        for (int i = 0; i <= n; i++) {
-            while (!stack.isEmpty() && (i == n || height[stack.peek()] > height[i])) {
-                int h = height[stack.pop()];
-                int w = stack.isEmpty() ? i : i - stack.peek() - 1;
-
-                res = Math.max(res, h * w);
-            }
-            stack.push(i);
-        }
-
-        return res;
+        return result;
     }
 }
