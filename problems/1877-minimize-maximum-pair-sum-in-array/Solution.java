@@ -1,44 +1,41 @@
 class Solution {
     public int minPairSum(int[] nums) {
-        int n = nums.length;
-
-        int min = 1;
-        int max = 1; 
+        int max = 0;
 
         for (int num : nums) {
             max = Math.max(max, num);
         }
 
-        int[] count = new int[max + 1];
+        int[] freq = new int[max + 1];
+
         for (int num : nums) {
-            count[num]++;
+            freq[num]++;
         }
 
-        int res = 0;
+        int result = 0;
 
-        while (min <= max) {
-            while (min < max && count[min] == 0) {
-                min++;
-            }
-            while (min < max && count[max] == 0) {
-                max--;
+        for (int l = 1, r = max; l <= r; ) {
+            if (freq[l] == 0) {
+                l++;
+                continue;
             }
 
-            if (min == max) {
-                if (count[min] > 0) {
-                    res = Math.max(res, min + max);
-                }
-                return res;
+            if (freq[r] == 0) {
+                r--;
+                continue;
             }
 
-            int pair = Math.min(count[min], count[max]);
+            int f = Math.min(freq[l], freq[r]);
+            if (l == r) {
+                f = f / 2;
+            }
+            
+            freq[l] -= f;
+            freq[r] -= f;
 
-            count[min] -= pair;
-            count[max] -= pair;
-
-            res = Math.max(res, min + max);
+            result = Math.max(result, l + r);
         }
 
-        return -1;
+        return result;
     }
 }
