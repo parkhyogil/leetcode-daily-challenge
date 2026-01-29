@@ -1,57 +1,43 @@
 class Solution {
-    private final int MAX = Integer.MAX_VALUE;
-
     public long minimumCost(String source, String target, char[] original, char[] changed, int[] cost) {
-        int m = source.length();
-        
-        int[][] distanceMatrix = calculateDistanceMatrix(original, changed, cost);
-        long res = 0;
+        int n = source.length();
+        int m = original.length;
 
-        for (int i = 0; i < m; i++) {
-            int u = source.charAt(i) - 'a';
-            int v = target.charAt(i) - 'a';
+        int INF = 100000000;
 
-            if (distanceMatrix[u][v] == MAX) {
-                return -1;
-            }
-
-            res += distanceMatrix[u][v];
-        }
-
-        return res;
-    }
-
-    private int[][] calculateDistanceMatrix(char[] original, char[] changed, int[] cost) {
-        int n = original.length;
-
-        int[][] res = new int[26][26];
-
-        for (int[] arr : res) {
-            Arrays.fill(arr, MAX);
-        }
+        int[][] c = new int[26][26];
 
         for (int i = 0; i < 26; i++) {
-            res[i][i] = 0;
+            for (int j = 0; j < 26; j++) {
+                c[i][j] = i == j ? 0 : INF;
+            }
         }
 
-        for (int i = 0; i < n; i++) {
-            int u = original[i] - 'a';
-            int v = changed[i] - 'a';
-            int w = cost[i];
-
-            res[u][v] = Math.min(res[u][v], w);
+        for (int i = 0; i < m; i++) {
+            c[original[i] - 'a'][changed[i] - 'a'] = Math.min(c[original[i] - 'a'][changed[i] - 'a'], cost[i]);
         }
 
         for (int k = 0; k < 26; k++) {
             for (int i = 0; i < 26; i++) {
                 for (int j = 0; j < 26; j++) {
-                    if (res[i][k] != MAX && res[k][j] != MAX) {
-                        res[i][j] = Math.min(res[i][j], res[i][k] + res[k][j]);
-                    }
+                    c[i][j] = Math.min(c[i][j], c[i][k] + c[k][j]);
                 }
             }
         }
 
-        return res;
+        long result = 0;
+
+        for (int i = 0; i < n; i++) {
+            int a = source.charAt(i) - 'a';
+            int b = target.charAt(i) - 'a';
+
+            if (c[a][b] >= INF) {
+                return -1;
+            }
+
+            result += c[a][b];
+        }
+
+        return result;
     }
 }
