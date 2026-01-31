@@ -4,6 +4,7 @@ class Solution {
 
         int lo = 0;
         int hi = n - 1;
+
         while (lo <= hi) {
             int mid = (lo + hi) / 2;
 
@@ -14,6 +15,6 @@ class Solution {
             }
         }
 
-        return letters[lo == n ? 0 : lo];
+        return letters[lo % n];
     }
 }
