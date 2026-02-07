@@ -1,28 +1,20 @@
 class Solution {
     public int minimumDeletions(String s) {
-        int aCount = 0;
-        int bCount = 0;
+        int result = s.length();
+
+        int prefA = 0;
+        int prefB = 0;
 
         for (char c : s.toCharArray()) {
             if (c == 'a') {
-                aCount++;
+                prefA++;
+                result = Math.min(result, prefB - prefA);
+            } else {
+                result = Math.min(result, prefB - prefA);
+                prefB++;
             }
         }
 
-        int res = s.length();
-
-        for (char c : s.toCharArray()) {
-            if (c == 'a') {
-                aCount--;
-            }
-
-            res = Math.min(res, aCount + bCount);
-
-            if (c == 'b') {
-                bCount++;
-            }
-        }
-
-        return res;
+        return result + prefA;
     }
 }
