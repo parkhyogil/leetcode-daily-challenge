@@ -19,33 +19,34 @@ class Solution {
 
         inorder(root, nodes);
 
-        return buildTree(0, nodes.size() - 1, nodes);
+        return build(0, nodes.size() - 1, nodes);
     }
 
-    private TreeNode buildTree(int left, int right, List<TreeNode> nodes) {
-        if (left > right) {
+    TreeNode build(int l, int r, List<TreeNode> nodes) {
+        if (l > r) {
             return null;
         }
 
-        int rootIdx = (left + right) / 2;
-        TreeNode root = nodes.get(rootIdx);
+        int m = (l + r) / 2;
 
-        root.left = buildTree(left, rootIdx - 1, nodes);
-        root.right = buildTree(rootIdx + 1, right, nodes);
+        TreeNode root = nodes.get(m);
+
+        root.left = build(l, m - 1, nodes);
+        root.right = build(m + 1, r, nodes);
 
         return root;
     }
 
-    private void inorder(TreeNode root, List<TreeNode> nodes) {
-        if (root == null) {
+    void inorder(TreeNode node, List<TreeNode> nodes) {
+        if (node == null) {
             return;
         }
+        
+        inorder(node.left, nodes);
+        nodes.add(node);
+        inorder(node.right, nodes);
 
-        inorder(root.left, nodes);
-        nodes.add(root);
-        inorder(root.right, nodes);
-
-        root.left = null;
-        root.right = null;
+        node.left = null;
+        node.right = null;
     }
 }
