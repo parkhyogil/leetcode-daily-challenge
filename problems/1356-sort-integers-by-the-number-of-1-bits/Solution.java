@@ -1,55 +1,30 @@
 class Solution {
     public int[] sortByBits(int[] arr) {
-        quickSort(0, arr.length - 1, arr);
-        return arr;
-    }
+        int n = arr.length;
 
-    private void quickSort(int left, int right, int[] arr) {
-        if (left >= right) {
-            return;
-        }
+        for (int i = 0; i < n; i++) {
+            int j = i - 1;
+            int val = arr[i];
 
-        int[] pos = partition(left, right, arr);
-
-        quickSort(left, pos[0], arr);
-        quickSort(pos[1], right, arr);
-    }
-
-    private int[] partition(int left, int right, int[] arr) {
-        int pivot = arr[(left + right) / 2];
-
-        int i = left;
-        int j = right;
-
-        while (i <= j) {
-            while (compare(arr[i], pivot)) {
-                i++;
-            }
-            while (compare(pivot, arr[j])) {
+            while (j >= 0) {
+                if (compare(arr[j], val) > 0) {
+                    arr[j + 1] = arr[j];
+                } else {
+                    break;
+                }
                 j--;
             }
 
-            if (i < j) {
-                swap(i++, j--, arr);
-            } else {
-                i++;
-            }
+            arr[j + 1] = val;
         }
-        return new int[] {j, j + 1};
+
+        return arr;
     }
 
-    private boolean compare(int a, int b) {
-        int diff = Integer.bitCount(a) - Integer.bitCount(b);
+    int compare(int a, int b) {
+        int x = Integer.bitCount(a);
+        int y = Integer.bitCount(b);
 
-        if (diff == 0) {
-            return a < b;
-        }
-        return diff < 0;
-    }
-
-    private void swap(int i, int j, int[] arr) {
-        int tmp = arr[i];
-        arr[i] = arr[j];
-        arr[j] = tmp;
+        return x != y ? x - y : a - b;
     }
 }
