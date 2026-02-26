@@ -1,26 +1,33 @@
 class Solution {
     public int numSteps(String s) {
-        int n = s.length();
+        int result = 0;
 
-        int carry = 0;
+        int i = s.length() - 1;
+        char[] arr = s.toCharArray();
 
-        int res = 0;
-        for (int i = n - 1; i >= 0; i--) {
-            int num = s.charAt(i) - '0' + carry;
-
-            if (num == 1) {
+        while (i >= 0) {
+            if (arr[i] == '1') {
                 if (i == 0) {
                     break;
                 }
+                
+                int j = i;
 
-                num = 2;
-                res++;
+                while (j >= 0 && arr[j] == '1') {
+                    j--;
+                }
+
+                result += i - j + 1;
+                if (j >= 0) {
+                    arr[j] = '1';
+                }
+                i = j;
+            } else {
+                result++;
+                i--;
             }
-
-            carry = num / 2;
-            res++;
         }
 
-        return res;
+        return result;
     }
 }
