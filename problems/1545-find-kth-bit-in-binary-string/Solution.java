@@ -4,22 +4,18 @@ class Solution {
             return '0';
         }
 
-        int length = (1 << n) - 1;
+        int len = (1 << n) - 1;
 
-        int mid = (1 + length) / 2;
+        int m = len / 2;
 
-        if (k == mid) {
+        if (k == m + 1) {
             return '1';
         }
 
-        if (k < mid) {
+        if (k < m + 1) {
             return findKthBit(n - 1, k);
         }
 
-        return invert(findKthBit(n - 1, length - k + 1));
-    }
-
-    private char invert(char c) {
-        return c == '0' ? '1' : '0';
+        return findKthBit(n - 1, len - k + 1) == '0' ? '1' : '0';
     }
 }
