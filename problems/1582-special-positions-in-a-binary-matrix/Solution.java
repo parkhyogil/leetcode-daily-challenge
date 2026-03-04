@@ -3,26 +3,26 @@ class Solution {
         int m = mat.length;
         int n = mat[0].length;
 
-        int[] rowCount = new int[m];
-        int[] colCount = new int[n];
+        int[] rowSum = new int[m];
+        int[] colSum = new int[n];
 
-        for (int r = 0; r < m; r++) {
-            for (int c = 0; c < n; c++) {
-                rowCount[r] += mat[r][c];
-                colCount[c] += mat[r][c];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                rowSum[i] += mat[i][j];
+                colSum[j] += mat[i][j];
             }
         }
 
-        int res = 0;
+        int result = 0;
 
-        for (int r = 0; r < m; r++) {
-            for (int c = 0; c < n; c++) {
-                if (mat[r][c] == 1 && rowCount[r] == 1 && colCount[c] == 1) {
-                    res++;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (mat[i][j] == 1 && rowSum[i] == 1 && colSum[j] == 1) {
+                    result++;
                 }
             }
         }
 
-        return res;
+        return result;
     }
 }
