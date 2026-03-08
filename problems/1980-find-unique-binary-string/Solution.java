@@ -3,28 +3,24 @@ class Solution {
         int n = nums.length;
 
         Set<Integer> set = new HashSet<>();
-
-        for (String num : nums) {
-            set.add(Integer.parseInt(num, 2));
+        for (int i = 0; i < n; i++) {
+            set.add(Integer.parseInt(nums[i], 2));
         }
 
-        int result = 0;
+        for (int i = 0; i <= n; i++) {
+            if (!set.contains(i)) {
+                char[] arr = new char[n];
+                int x = i;
+                
+                for (int j = n - 1; j >= 0; j--) {
+                    arr[j] = (char) ('0' + x % 2);
+                    x /= 2;
+                }
 
-        while (set.contains(result)) {
-            result++;
+                return String.valueOf(arr);
+            }
         }
 
-        return toBinaryString(result, n);
-    }
-
-    String toBinaryString(int num, int length) {
-        char[] chars = new char[length];
-
-        for (int i = length - 1; i >= 0; i--) {
-            chars[i] = num % 2 == 0 ? '0' : '1';
-            num /= 2;
-        }
-
-        return String.valueOf(chars);
+        return "";
     }
 }
