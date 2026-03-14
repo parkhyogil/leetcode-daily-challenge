@@ -1,35 +1,29 @@
 class Solution {
     public String getHappyString(int n, int k) {
-        if (k > (1 << (n - 1)) * 3) {
+        int[] pow = new int[n];
+        pow[0] = 1;
+        for (int i = 1; i < n; i++) {
+            pow[i] = pow[i - 1] * 2;
+        }
+
+        if (k > 3 * pow[n - 1]) {
             return "";
         }
         k--;
 
-        int[] arr = new int[n];
+        char[][] next = new char[][] {
+            {'b', 'c'}, {'a', 'c'}, {'a', 'b'}
+        };
 
-        for (int i = n - 1; i > 0; i--) {
-            arr[i] = k % 2;
-            k /= 2;
-        }
-        arr[0] = k % 3;
+        char[] arr = new char[n];
+        arr[0] = (char) ('a' + k / pow[n - 1]);
+        k %= pow[n - 1];
 
-        char[] chars = new char[n];
-        chars[0] = (char) ('a' + arr[0]);
-        
         for (int i = 1; i < n; i++) {
-            chars[i] = getNextLetter(chars[i - 1], arr[i]);
+            arr[i] = next[arr[i - 1] - 'a'][k / pow[n - 1 - i]];
+            k %= pow[n - 1 - i];
         }
 
-        return String.valueOf(chars);
-    }
-
-    char getNextLetter(char prev, int k) {
-        if (prev == 'a') {
-            return k == 0 ? 'b' : 'c';
-        } else if (prev == 'b') {
-            return k == 0 ? 'a' : 'c';
-        } else {
-            return k == 0 ? 'a' : 'b';
-        }
+        return String.valueOf(arr);
     }
 }
