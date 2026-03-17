@@ -3,23 +3,26 @@ class Solution {
         int m = matrix.length;
         int n = matrix[0].length;
 
-        for (int c = 0; c < n; c++) {
-            for (int r = 1; r < m; r++) {
-                if (matrix[r][c] > 0) {
-                    matrix[r][c] += matrix[r - 1][c];
-                }
+        List<Integer> idx = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            idx.add(i);
+        }
+
+        int result = 0;
+        int[] count = new int[n];
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                count[j] = matrix[i][j] == 0 ? 0 : count[j] + 1;
+            }
+
+            idx.sort((a, b) -> count[b] - count[a]);
+
+            for (int j = 0; j < n && count[idx.get(j)] > 0; j++) {
+                result = Math.max(result, count[idx.get(j)] * (j + 1));
             }
         }
 
-        int res = 0;
-        for (int[] arr : matrix) {
-            Arrays.sort(arr);
-
-            for (int c = n - 1; c >= 0 && arr[c] > 0; c--) {
-                res = Math.max(res, arr[c] * (n - c));
-            }
-        }
-        
-        return res;
+        return result;
     }
 }
