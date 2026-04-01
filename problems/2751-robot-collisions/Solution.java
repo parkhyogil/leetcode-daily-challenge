@@ -2,52 +2,44 @@ class Solution {
     public List<Integer> survivedRobotsHealths(int[] positions, int[] healths, String directions) {
         int n = positions.length;
 
-        int[][] robots = new int[n][];
-
+        Integer[] arr = new Integer[n];
         for (int i = 0; i < n; i++) {
-            robots[i] = new int[] {positions[i], i};
+            arr[i] = i;
         }
 
-        Arrays.sort(robots, (a, b) -> Integer.compare(a[0], b[0]));
+        Arrays.sort(arr, (a, b) -> positions[a] - positions[b]);
 
-        Stack<Integer> stack = new Stack<>();
+        int idx = -1;
 
         for (int i = 0; i < n; i++) {
-            int idx = robots[i][1];
-            int health = healths[idx];
-            char dir = directions.charAt(idx);
-
-            if (dir == 'R') {
-                stack.push(idx);
-                continue;
-            }
-
-            while (!stack.isEmpty() && health > 0) {
-                int collisionRobotHealth = healths[stack.peek()];
-
-                if (collisionRobotHealth > health) {
-                    healths[stack.peek()]--;
-                    health = 0;
-                } else if (collisionRobotHealth < health) {
-                    healths[stack.pop()] = 0;
-                    health--;
+            while (idx > -1 && directions.charAt(arr[idx]) == 'R' && directions.charAt(arr[i]) == 'L' && healths[arr[i]] > 0) {
+                int d = healths[arr[idx]] - healths[arr[i]];
+                if (d == 0) {
+                    healths[arr[idx]] = healths[arr[i]] = 0;
+                    idx--;
+                } else if (d > 0) {
+                    healths[arr[idx]]--;
+                    healths[arr[i]] = 0;
                 } else {
-                    healths[stack.pop()] = 0;
-                    health = 0;
+                    healths[arr[idx]] = 0;
+                    healths[arr[i]]--;
+                    idx--;
                 }
             }
 
-            healths[idx] = health;
-        }
-
-        List<Integer> res = new ArrayList<>();
-
-        for (int i = 0; i < n; i++) {
-            if (healths[i] > 0) {
-                res.add(healths[i]);
+            if (healths[arr[i]] > 0) {
+                arr[++idx] = arr[i];
             }
         }
 
-        return res;
+        List<Integer> result = new ArrayList<>();
+
+        for (int i = 0; i < n; i++) {
+            if (healths[i] > 0) {
+                result.add(healths[i]);
+            }
+        }
+
+        return result;
     }
 }
