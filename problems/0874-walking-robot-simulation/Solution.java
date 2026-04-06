@@ -1,45 +1,42 @@
 class Solution {
-    private final int[][] offset = new int[][] {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
-
     public int robotSim(int[] commands, int[][] obstacles) {
-        Set<Integer> obstacleSet = new HashSet<>();
+        Set<Long> set = new HashSet<>();
 
-        for (int[] obstacle : obstacles) {
-            obstacleSet.add(getIndex(obstacle[0], obstacle[1]));
+        for (int[] o : obstacles) {
+            set.add(get(o[0], o[1]));
         }
 
-        int result = 0;
-
-        int direction = 0;
+        int[][] dir = new int[][] {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+        int d = 0;
         int x = 0;
         int y = 0;
+        int result = 0;
 
-        for (int command : commands) {
-            if (command == - 1) {
-                direction = (direction + 1) % 4;
-            } else if (command == -2) {
-                direction = (direction + 3) % 4;
+        for (int c : commands) {
+            if (c == -1) {
+                d = (d + 1) % 4;
+            } else if (c == -2) {
+                d = (d - 1 + 4) % 4;
             } else {
-                for (int i = 0; i < command; i++) {
-                    int nextX = offset[direction][0] + x;
-                    int nextY = offset[direction][1] + y;
+                for (int i = 1; i <= c; i++) {
+                    int nx = x + dir[d][0];
+                    int ny = y + dir[d][1];
 
-                    if (obstacleSet.contains(getIndex(nextX, nextY))) {
+                    if (set.contains(get(nx, ny))) {
                         break;
                     }
-
-                    x = nextX;
-                    y = nextY;
+                    x = nx;
+                    y = ny;
                 }
-
-                result = Math.max(result, x * x + y * y);
             }
+
+            result = Math.max(result, x * x + y * y);
         }
 
         return result;
     }
 
-    private int getIndex(int x, int y) {
-        return x * 60001 + y;
+    long get(int x, int y) {
+        return (x + 100000) * 1000000 + y + 100000;
     }
 }
