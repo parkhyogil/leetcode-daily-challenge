@@ -3,37 +3,36 @@ class Solution {
         int m = grid.length;
         int n = grid[0].length;
 
-        int[] count = new int[10001];
+        int[] freq = new int[10001];
 
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                count[grid[i][j]]++;
+        int min = Integer.MAX_VALUE;
+        int max = 0;
+        for (int[] row : grid) {
+            for (int v : row) {
+                freq[v]++;
+                min = Math.min(v, min);
+                max = Math.max(v, max);
             }
+        }
+
+        if ((max - min) % x != 0) {
+            return -1;
         }
 
         int result = 0;
 
-        int i = 1;
-        int j = 10000;
-
-        while (j - i >= x) {
-            if (count[i] <= count[j]) {
-                count[i + x] += count[i];
-                result += count[i];
-                i++;
+        while (min < max) {
+            if (freq[min] < freq[max]) {
+                result += freq[min];
+                freq[min + x] += freq[min];
+                min += x;
             } else {
-                count[j - x] += count[j];
-                result += count[j];
-                j--;
+                result += freq[max];
+                freq[max - x] += freq[max];
+                max -= x;
             }
         }
 
-        while (i <= j) {
-            if (count[i++] == m * n) {
-                return result;
-            }
-        }
-
-        return -1;
+        return freq[min] == m * n ? result : -1;
     }
 }
