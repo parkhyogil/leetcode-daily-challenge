@@ -5,50 +5,49 @@ class Solution {
         Map<Integer, List<Integer>> map = new HashMap<>();
 
         for (int i = 0; i < n; i++) {
-            if (!map.containsKey(arr[i])) {
-                map.put(arr[i], new ArrayList<>());
-            }
-            map.get(arr[i]).add(i);
+            map.computeIfAbsent(arr[i], k -> new ArrayList<>()).add(i);
         }
 
-        int res = 0;
-        Queue<Integer> q = new LinkedList<>();
-        boolean[] visit = new boolean[n];
+        Queue<Integer> queue = new ArrayDeque<>();
+        boolean[] visited = new boolean[n];
 
-        q.offer(0);
-        visit[0] = true;
+        queue.offer(0);
+        visited[0] = true;
 
-        while (!q.isEmpty()) {
-            int size = q.size();
+        int result = 0;
 
+        while (!queue.isEmpty()) {
+            int size = queue.size();
             while (size-- > 0) {
-                int curr = q.poll();
-                if (curr == n - 1) {
-                    return res;
+                int i = queue.poll();
+
+                if (i == n - 1) {
+                    return result;
                 }
 
-                if (map.containsKey(arr[curr])) {
-                    for (int next : map.get(arr[curr])) {
-                        if (visit[next]) {
-                            continue;
+                if (i > 0 && !visited[i - 1]) {
+                    queue.offer(i - 1);
+                    visited[i - 1] = true;
+                }
+
+                if (i + 1 < n && !visited[i + 1]) {
+                    queue.offer(i + 1);
+                    visited[i + 1] = true;
+                }
+
+                if (map.containsKey(arr[i])) {
+                    for (int j : map.get(arr[i])) {
+                        if (!visited[j]) {
+                            queue.offer(j);
+                            visited[j] = true;
                         }
-                        q.offer(next);
-                        visit[next] = true;
                     }
-                }
-                map.remove(arr[curr]);
-
-                if (curr - 1 >= 0 && !visit[curr - 1]) {
-                    q.offer(curr - 1);
-                    visit[curr - 1] = true;
-                }
-                if (curr + 1 < n && !visit[curr + 1]) {
-                    q.offer(curr + 1);
-                    visit[curr + 1] = true;
+                    map.remove(arr[i]);
                 }
             }
-            res++;
+            result++;
         }
+
         return -1;
     }
 }
