@@ -3,13 +3,18 @@ class Solution {
         int m = nums1.length;
         int n = nums2.length;
 
-        for (int i = 0, j = 0; i < m && j < n;) {
-            if (nums1[i] > nums2[j]) {
-                j++;
-            } else if (nums1[i] < nums2[j]) {
+        int i = 0;
+        int j = 0;
+
+        while (i < m && j < n) {
+            if (nums1[i] == nums2[j]) {
+                return nums1[i];
+            }
+
+            if (nums1[i] < nums2[j]) {
                 i++;
             } else {
-                return nums1[i];
+                j++;
             }
         }
 
