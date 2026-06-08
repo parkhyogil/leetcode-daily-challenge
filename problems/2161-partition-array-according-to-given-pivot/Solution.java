@@ -2,22 +2,30 @@ class Solution {
     public int[] pivotArray(int[] nums, int pivot) {
         int n = nums.length;
 
-        int[] result = new int[n];
+        int less = 0;
+        int equal = 0;
 
-        int l = 0;
-        int r = n - 1;
-        for (int i = 0, j = n - 1; i < n; i++, j--) {
-            if (nums[i] < pivot) {
-                result[l++] = nums[i];
-            }
-
-            if (nums[j] > pivot) {
-                result[r--] = nums[j];
+        for (int x : nums) {
+            if (x < pivot) {
+                less++;
+            } else if (x == pivot) {
+                equal++;
             }
         }
 
-        while (l <= r) {
-            result[l++] = pivot;
+        int[] result = new int[n];
+        int i = 0;
+        int j = less;
+        int k = less + equal;
+
+        for (int x : nums) {
+            if (x < pivot) {
+                result[i++] = x;
+            } else if (x == pivot) {
+                result[j++] = x;
+            } else {
+                result[k++] = x;
+            }
         }
 
         return result;
