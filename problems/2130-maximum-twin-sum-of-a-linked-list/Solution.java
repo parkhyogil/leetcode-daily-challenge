@@ -1,29 +1,3 @@
-class Solution {
-    public int pairSum(ListNode head) {
-        ListNode s = head;
-        ListNode f = head;
-
-        ListNode left = null;
-        while (f != null && f.next != null) {
-            ListNode sTmp = s.next;
-            f = f.next.next;
-
-            s.next = left;
-            left = s;
-            s = sTmp;
-        }
-
-        ListNode right = s;
-        
-        int res = 0;
-        while (left != null) {
-            res = Math.max(res, left.val + right.val);
-            left = left.next;
-            right = right.next;
-        }
-        return res;
-    }
-}
 /**
  * Definition for singly-linked list.
  * public class ListNode {
@@ -34,3 +8,24 @@ class Solution {
  *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
  * }
  */
+class Solution {
+    public int pairSum(ListNode head) {
+        List<Integer> vals = new ArrayList<>();
+        ListNode node = head;
+
+        while (node != null) {
+            vals.add(node.val);
+            node = node.next;
+        }
+
+        int result = 0;
+
+        node = head;
+        for (int i = 0; i < vals.size(); i++) {
+            result = Math.max(result, node.val + vals.get(vals.size() - 1 - i));
+            node = node.next;
+        }
+
+        return result;
+    }
+}
