@@ -2,27 +2,18 @@ class Solution {
     public int numberOfSubstrings(String s) {
         int n = s.length();
 
-        int[] count = new int[26];
-        int distinctChars = 0;
-
+        int[] f = new int[3];
         int result = 0;
 
         for (int l = 0, r = 0; r < n; r++) {
-            int c = s.charAt(r) - 'a';
+            f[s.charAt(r) - 'a']++;
 
-            if (count[c] == 0) {
-                distinctChars++;
+            while (f[s.charAt(l) - 'a'] > 1) {
+                f[s.charAt(l++) - 'a']--;
             }
-            count[c]++;
 
-            while (distinctChars == 3) {
-                result += n - r;
-
-                c = s.charAt(l++) - 'a';
-                count[c]--;
-                if (count[c] == 0) {
-                    distinctChars--;
-                }
+            if (f[0] > 0 && f[1] > 0 && f[2] > 0) {
+                result += l + 1;
             }
         }
 
