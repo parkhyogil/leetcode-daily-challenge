@@ -1,112 +1,92 @@
 class Solution {
+    int n;
+    int[][] dir = new int[][] {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+
     public int maximumSafenessFactor(List<List<Integer>> grid) {
-        int n = grid.size();
+        n = grid.size();
 
-        int[][] dir = new int[][] {
-            {-1, 0}, {1, 0}, {0, -1}, {0, 1}
-        };
-
-        Queue<int[]> queue = new LinkedList<>();
-        int[][] dist = new int[n][n];
-
-        for (int[] d : dist) {
-            Arrays.fill(d, -1);
+        if (grid.get(0).get(0) == 1 || grid.get(n - 1).get(n - 1) == 1) {
+            return 0;
         }
+
+        Queue<int[]> queue = new ArrayDeque<>();
+        int[][] minDist = new int[n][n];
 
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 if (grid.get(i).get(j) == 1) {
-                    queue.offer(new int[] {i, j});            
-                    dist[i][j] = 0;
+                    queue.offer(new int[] {i, j});
+                    minDist[i][j] = 0;
+                } else {
+                    minDist[i][j] = -1;
                 }
             }
         }
 
-        List<List<int[]>> groupByDist = new ArrayList<>();
 
         while (!queue.isEmpty()) {
             int size = queue.size();
-
-            groupByDist.add(new ArrayList<>());
-
+            
             while (size-- > 0) {
                 int[] cur = queue.poll();
-                int r = cur[0];
-                int c = cur[1];
-
-                groupByDist.get(dist[r][c]).add(cur);
 
                 for (int[] d : dir) {
-                    int nr = r + d[0];
-                    int nc = c + d[1];
+                    int nr = cur[0] + d[0];
+                    int nc = cur[1] + d[1];
 
-                    if (nr < 0 || nr == n || nc < 0 || nc == n || dist[nr][nc] != -1) {
+                    if (nr < 0 || nr == n || nc < 0 || nc == n || minDist[nr][nc] > -1) {
                         continue;
                     }
 
                     queue.offer(new int[] {nr, nc});
-                    dist[nr][nc] = dist[r][c] + 1;
+                    minDist[nr][nc] = minDist[cur[0]][cur[1]] + 1;
                 }
             }
         }
 
-        int maxDist = groupByDist.size() - 1;
-        DisjointSet ds = new DisjointSet(n * n);
+        int lo = 0;
+        int hi = n;
 
-        for (int i = maxDist; i >= 0; i--) {
-            for (int[] pos : groupByDist.get(i)) {
-                int r = pos[0];
-                int c = pos[1];
+        while (lo <= hi) {
+            int mid = (lo + hi) / 2;
 
-                for (int[] d : dir) {
-                    int nr = r + d[0];
-                    int nc = c + d[1];
-
-                    if (nr < 0 || nr == n || nc < 0 || nc == n || dist[nr][nc] < dist[r][c]) {
-                        continue;
-                    }
-
-                    ds.union(r * n + c, nr * n + nc);
-                }
+            if (decide(mid, minDist)) {
+                lo = mid + 1;
+            } else {
+                hi = mid - 1;
             }
+        }
 
-            if (ds.findRoot(0) == ds.findRoot(n * n - 1)) {
-                return i;
-            }
-        }   
-
-        return -1;
+        return hi;
     }
 
-    class DisjointSet {
-        private int size;
-        private int[] root;
+    boolean decide(int min, int[][] minDist) {
+        if (minDist[0][0] < min) {
+            return false;
+        }
+        
+        Queue<int[]> queue = new ArrayDeque<>();
+        queue.offer(new int[] {0, 0});
 
-        public DisjointSet(int size) {
-            this.size = size;
-            root = new int[size];
+        boolean[][] visit = new boolean[n][n];
+        visit[0][0] = true;
 
-            for (int i = 0; i < size; i++) {
-                root[i] = i;
+        while (!queue.isEmpty()) {
+            int[] cur = queue.poll();
+
+            for (int[] d : dir) {
+                int nr = cur[0] + d[0];
+                int nc = cur[1] + d[1];
+
+                if (nr < 0 || nr == n || nc < 0 || nc == n || visit[nr][nc] || minDist[nr][nc] < min) {
+                    continue;
+                }
+
+                queue.offer(new int[] {nr, nc});
+                visit[nr][nc] = true;
             }
         }
 
-        public void union(int a, int b) {
-            a = findRoot(a);
-            b = findRoot(b);
-
-            if (a < b) {
-                root[b] = a;
-            } else {
-                root[a] = b;
-            }
-        }
-
-        public int findRoot(int child) {
-            if (child == root[child]) {
-                return child;
-            }
-            return root[child] = findRoot(root[child]);
-        }
+        return visit[n - 1][n - 1];
     }
 }
