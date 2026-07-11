@@ -1,37 +1,24 @@
 class Solution {
-    private int[] root, componentSize, edgeCount;
+    int[] root, size, count;
 
     public int countCompleteComponents(int n, int[][] edges) {
         root = new int[n];
-        componentSize = new int[n];
-        edgeCount = new int[n];
+        size = new int[n];
+        count = new int[n];
 
         for (int i = 0; i < n; i++) {
             root[i] = i;
-            componentSize[i] = 1;
-        }
+            size[i] = 1;
+        }    
 
-        for (int[] edge : edges) {
-            int a = findRoot(edge[0]);
-            int b = findRoot(edge[1]);
-
-            if (a == b) {
-                edgeCount[a]++;
-            } else if (a < b) {
-                root[b] = a;
-                componentSize[a] += componentSize[b];
-                edgeCount[a] += edgeCount[b] + 1;
-            } else {
-                root[a] = b;
-                componentSize[b] += componentSize[a];
-                edgeCount[b] += edgeCount[a] + 1;
-            }
+        for (int[] e : edges) {
+            union(e[0], e[1]);
         }
 
         int result = 0;
 
         for (int i = 0; i < n; i++) {
-            if (isCompleteComponent(i)) {
+            if (i == findRoot(i) && count[i] == size[i] * (size[i] - 1) / 2) {
                 result++;
             }
         }
@@ -39,14 +26,30 @@ class Solution {
         return result;
     }
 
-    private int findRoot(int child) {
-        if (child == root[child]) {
-            return child;
+    void union(int a, int b) {
+        a = findRoot(a);
+        b = findRoot(b);
+
+        if (a == b) {
+            count[a]++;
+            return;
         }
-        return root[child] = findRoot(root[child]);
+
+        if (a < b) {
+            root[b] = a;
+            size[a] += size[b];
+            count[a] += count[b] + 1;
+        } else {
+            root[a] = b;
+            size[b] += size[a];
+            count[b] += count[a] + 1;
+        }
     }
 
-    private boolean isCompleteComponent(int node) {
-        return node == findRoot(node) && edgeCount[node] == componentSize[node] * (componentSize[node] - 1) / 2;
+    int findRoot(int x) {
+        if (x == root[x]) {
+            return x;
+        }
+        return root[x] = findRoot(root[x]);
     }
 }
