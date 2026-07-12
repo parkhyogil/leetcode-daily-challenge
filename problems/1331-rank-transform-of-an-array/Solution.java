@@ -6,23 +6,24 @@ class Solution {
             return new int[0];
         }
 
-        Integer[] indexArray = new Integer[n];
+        List<Integer> list = new ArrayList<>();
         for (int i = 0; i < n; i++) {
-            indexArray[i] = i;
+            list.add(i);
         }
 
-        Arrays.sort(indexArray, (a, b) -> Integer.compare(arr[a], arr[b]));
+        list.sort((a, b) -> arr[a] - arr[b]);
 
-        int[] rankArray = new int[n];
-        rankArray[indexArray[0]] = 1;
+        int[] result = new int[n];
+        result[list.get(0)] = 1;
 
         for (int i = 1; i < n; i++) {
-            rankArray[indexArray[i]] = rankArray[indexArray[i - 1]];
-            if (arr[indexArray[i]] > arr[indexArray[i - 1]]) {
-                rankArray[indexArray[i]]++;
+            result[list.get(i)] = result[list.get(i - 1)];
+
+            if (arr[list.get(i)] > arr[list.get(i - 1)]) {
+                result[list.get(i)]++;
             }
         }
-
-        return rankArray;
+        
+        return result;
     }
 }
