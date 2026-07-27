@@ -3,12 +3,12 @@ class Solution {
         int a = 0;
         int b = 0;
 
-        for (int num : nums) {
-            if (num > a) {
+        for (int x : nums) {
+            if (x > a) {
                 b = a;
-                a = num;
-            } else if (num > b) {
-                b = num;
+                a = x;
+            } else if (x > b) {
+                b = x;
             }
         }
 
