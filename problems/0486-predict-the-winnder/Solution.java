@@ -1,17 +1,17 @@
 class Solution {
-    public boolean PredictTheWinner(int[] nums) {
+    public boolean predictTheWinner(int[] nums) {
         int n = nums.length;
-        return recur(0, n - 1, nums, new Integer[n][n]) >= 0;
-    }
 
-    private int recur(int left, int right, int[] nums, Integer[][] memo) {
-        if (left == right) {
-            return nums[left];
+        int[][] dp = new int[n][n];
+
+        for (int c = 0; c < n; c++) {
+            dp[c][c] = nums[c];
+
+            for (int r = c - 1; r >= 0; r--) {
+                dp[r][c] = Math.max(nums[r] - dp[r + 1][c], nums[c] - dp[r][c - 1]);
+            }
         }
-        if (memo[left][right] != null) {
-            return memo[left][right];
-        }
-        return memo[left][right] = Math.max(nums[left] - recur(left + 1, right, nums, memo), 
-                                          nums[right] - recur(left, right - 1, nums, memo));
+
+        return dp[0][n - 1] >= 0;
     }
 }
