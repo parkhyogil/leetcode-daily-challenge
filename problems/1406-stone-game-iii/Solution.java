@@ -2,25 +2,18 @@ class Solution {
     public String stoneGameIII(int[] stoneValue) {
         int n = stoneValue.length;
 
-        int diff = recur(0, stoneValue, new Integer[n]);
-        return diff == 0 ? "Tie" : diff > 0 ? "Alice" : "Bob";
-    }
+        int[] dp = new int[n + 1];
 
-    private int recur(int idx, int[] nums, Integer[] memo) {
-        if (idx >= nums.length) {
-            return 0;
+        for (int i = n - 1; i >= 0; i--) {
+            dp[i] = Integer.MIN_VALUE;
+            int sum = 0;
+
+            for (int j = 0; j < 3 && i + j < n; j++) {
+                sum += stoneValue[i + j];
+                dp[i] = Math.max(dp[i], sum - dp[i + j + 1]);
+            }
         }
 
-        if (memo[idx] != null) {
-            return memo[idx];
-        }
-
-        int res = Integer.MIN_VALUE;
-        int sum = 0;
-        for (int i = 0; i < 3 && idx + i < nums.length; i++) {
-            sum += nums[idx + i];
-            res = Math.max(res, sum - recur(idx + i + 1, nums, memo));
-        }
-        return memo[idx] = res;
+        return dp[0] > 0 ? "Alice" : (dp[0] < 0 ? "Bob" : "Tie");
     }
 }
