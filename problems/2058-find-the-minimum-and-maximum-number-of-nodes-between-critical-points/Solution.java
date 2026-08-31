@@ -10,40 +10,32 @@
  */
 class Solution {
     public int[] nodesBetweenCriticalPoints(ListNode head) {
-        List<Integer> criticalPoints = getCriticalPoints(head);
+        int min = Integer.MAX_VALUE;
+        int max = -1;
 
-        int size = criticalPoints.size();
+        int i = 1;
+        int f = -1;
+        int p = -1;
 
-        if (size < 2) {
-            return new int[] {-1, -1};
-        }
+        while (head.next != null && head.next.next != null) {
+            int a = head.val;
+            int b = head.next.val;
+            int c = head.next.next.val;
 
-        int minDist = Integer.MAX_VALUE;
-        int maxDist = criticalPoints.get(size - 1) - criticalPoints.get(0);
-
-        for (int i = 1; i < size; i++) {
-            minDist = Math.min(minDist, criticalPoints.get(i) - criticalPoints.get(i - 1));
-        }
-
-        return new int[] {minDist, maxDist};
-    }
-
-    private List<Integer> getCriticalPoints(ListNode head) {
-        ListNode prev = new ListNode(head.val);
-
-        List<Integer> res = new ArrayList<>();
-        int idx = 0;
-
-        while (head.next != null) {
-            if ((prev.val < head.val && head.val > head.next.val) || (prev.val > head.val && head.val < head.next.val)) {
-                res.add(idx);
+            if ((a > b && b < c) || (a < b && b > c)) {
+                if (p == -1) {
+                    f = i;
+                } else {
+                    max = Math.max(max, i - f);
+                    min = Math.min(min, i - p);
+                }
+                p = i;
             }
-            
-            prev = head;
+
             head = head.next;
-            idx++;
+            i++;
         }
 
-        return res;
+        return max == -1 ? new int[] {-1, -1} : new int[] {min, max};
     }
 }
