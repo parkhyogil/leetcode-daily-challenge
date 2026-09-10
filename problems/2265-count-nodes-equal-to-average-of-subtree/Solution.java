@@ -14,31 +14,27 @@
  * }
  */
 class Solution {
-    private int res;
+    int result = 0;
 
     public int averageOfSubtree(TreeNode root) {
-        res = 0;
-
-        recur(root);
-
-        return res;    
+        dfs(root);
+        return result;    
     }
 
-    private int[] recur(TreeNode root) {
-        if (root == null) {
+    int[] dfs(TreeNode node) {
+        if (node == null) {
             return new int[] {0, 0};
         }
 
-        int[] left = recur(root.left);
-        int[] right = recur(root.right);
+        int[] left = dfs(node.left);
+        int[] right = dfs(node.right);
 
-        left[0] += right[0] + root.val;
-        left[1] += right[1] + 1;
+        int[] res = new int[] {node.val + left[0] + right[0], 1 + left[1] + right[1]};
 
-        if (left[0] / left[1] == root.val) {
-            res++;
+        if (node.val == res[0] / res[1]) {
+            result++;
         }
-        
-        return left;
+
+        return res;
     }
 }
