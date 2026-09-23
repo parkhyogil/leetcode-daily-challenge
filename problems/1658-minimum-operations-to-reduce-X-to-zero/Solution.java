@@ -2,30 +2,32 @@ class Solution {
     public int minOperations(int[] nums, int x) {
         int n = nums.length;
 
-        int total = 0;
-        for (int i = 0; i < n; i++) {
-            total += nums[i];
+        int t = 0;
+        for (int v : nums) {
+            t += v;
         }
 
-        int target = total - x;
-
-        if (target < 0) {
-            return -1;
+        if (t == x) {
+            return n;
         }
 
-        int res = n + 1;
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(0, -1);
+
+        int result = n + 1;
         int sum = 0;
-        for (int l = 0, r = 0; r < n; r++) {
-            sum += nums[r];
+        int target = t - x;
 
-            while (sum > target) {
-                sum -= nums[l++];
+        for (int i = 0; i < n; i++) {
+            sum += nums[i];
+
+            if (map.containsKey(sum - target)) {
+                result = Math.min(result, n - i + map.get(sum - target));
             }
 
-            if (sum == target) {
-                res = Math.min(res, n - (r - l + 1));
-            }
+            map.put(sum, i);
         }
-        return res > n ? -1 : res;
+
+        return result > n ? -1 : result;
     }
 }
