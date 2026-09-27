@@ -1,20 +1,23 @@
 class Solution {
-    private int idx;
+    String s;
+    int i, n;
 
     public String reverseParentheses(String s) {
-        idx = 0;
+        this.s = s;
+        i = 0;
+        n = s.length();
 
-        return recur(s);
+        return recur();    
     }
 
-    private String recur(String s) {
+    String recur() {
         StringBuilder sb = new StringBuilder();
 
-        while (idx < s.length()) {
-            char c = s.charAt(idx++);
+        while (i < n) {
+            char c = s.charAt(i++);
 
             if (c == '(') {
-                sb.append(recur(s));
+                sb.append(recur());        
             } else if (c == ')') {
                 return sb.reverse().toString();
             } else {
