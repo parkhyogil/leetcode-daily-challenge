@@ -1,21 +1,20 @@
 class Solution {
     public int minAddToMakeValid(String s) {
-        int numOfAdds = 0;
-        int balance = 0;
+        int result = 0;
+        int b = 0;
 
         for (char c : s.toCharArray()) {
-            if (c == '(') {
-                balance++;
+            if (c == ')') {
+                b--;
             } else {
-                balance--;
-
-                if (balance < 0) {
-                    numOfAdds++;
-                    balance = 0;
+                if (b < 0) {
+                    result -= b;
+                    b = 0;
                 }
+                b++;
             }
         }
-
-        return numOfAdds + balance;
+        
+        return result + Math.abs(b);
     }
 }
